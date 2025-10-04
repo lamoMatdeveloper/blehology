@@ -9,41 +9,6 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-<!-- Esto es para firebase, ADRIAN -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-  
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyCIU-q88QGBqNmydsvnB_HaoONK1SNEAzE",
-    authDomain: "blehology.firebaseapp.com",
-    databaseURL: "https://blehology-default-rtdb.firebaseio.com",
-    projectId: "blehology",
-    storageBucket: "blehology.firebasestorage.app",
-    messagingSenderId: "166464430045",
-    appId: "1:166464430045:web:77566d918ba41c43c86034",
-    measurementId: "G-T2T1QWYQ2"
-  };
-  
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
-  const rootRef = ref(database);
-  const itemsRef = ref(database, 'items');
-  
-  //Push data to your new database
-  let TextoAPublicar = "Coso";
-
-  const newItemRef = push(itemsRef);
-  set(newItemRef, {Tag1: TextoAPublicar})
-  
-  //post-publish analysis
-  .then(() => console.log("Se ha subido '", TextoAPublicar ,"' correctamente a la base de datos!"))
-  .catch((err) => console.error("❌ Error:", err));
-</script>
-<!-- Ya acabo lo de firebase, ADRIAN-->
 
   </body>
   </html>
-
