@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head> /*Hecho por diego*/
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>page</title>
@@ -13,15 +13,17 @@
         align-items: center;
         background-image: url('thebackdrop.jpg'); /* Replace with your image path */
         background-size: cover;
+        position: relative;
     }
 
-        .box {
-        width: 90%;
-        height: 300px;
+        .BoxBase {
+        position: absolute;
+        width: 40%;
+        height: 100vh;
         background: rgba(0,0,0,0.15);
         backdrop-filter: blur(3px); /* Blur effect */
         webkit-backdrop-filter: blur(3px); /* For Safari */
-        border-radius: 15px; /* Rounded corners */
+        border-radius: 25px; /* Rounded corners */
         display: flex;
         justify-content: center;
         align-items: center;
@@ -32,12 +34,18 @@
         -moz-box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
         box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
         border: 3px solid rgba(100, 100, 100, 0.1);
-        
+      
     }
     </style>
 </head>
 <body>
-    <div class="box">Hello world</div>
+    <div class="BoxBase" style="width: 20%; height: 86vh; left: 1%; top: 2vh;">Side bar
+
+    </div>
+    <div class="BoxBase" style="width: 20%; height: 8vh; left: 1%; bottom: 2vh;"> Search Bar </div>
+    <div class="BoxBase" style="width: 52%; height: 5vh; top: 2vh;"> Search Bar </div>
+    <div class="BoxBase" style="width: 20%; height: 96vh; right: 1%;">AI Chat</div>
+    <div class="BoxBase" style="width: 52%; height: 86vh; bottom: 2vh;">Random Articles</div>
 </body>
 </html>
 
