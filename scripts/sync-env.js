@@ -8,6 +8,7 @@ const root = process.cwd();
 const sourcePath = path.join(root, 'Documentos', 'Claves', 'API.env');
 const backendEnv = path.join(root, 'apps', 'backend', '.env');
 const frontendEnv = path.join(root, 'apps', 'frontend', '.env');
+const iaEnv = path.join(root, 'apps', 'IA', '.env');
 
 function parseEnv(text) {
   const out = {};
@@ -56,7 +57,12 @@ function main() {
   } else {
     console.log('No VITE_* variables found for frontend');
   }
+
+  // Write IA service .env (all vars)
+  fs.mkdirSync(path.dirname(iaEnv), { recursive: true });
+  fs.writeFileSync(iaEnv, toEnvFile(env));
+  console.log(`Wrote ${iaEnv}`);
+
 }
 
 main();
-
