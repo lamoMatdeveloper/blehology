@@ -7,8 +7,7 @@
 </head>
 
 <body>
-
-<!-- Esto es para firebase -->
+    
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
 import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
@@ -35,13 +34,12 @@ import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/
   let TextoAPublicar = "Coso";
 
   const newItemRef = push(itemsRef);
-  set(newItemRef, {Tag1: TextoAPublicar})
+  set(newItemRef, {name: TextoAPublicar, createdAt: new Date().toISOString()})
   
   //post-publish analysis
   .then(() => console.log("Se ha subido '", TextoAPublicar ,"' correctamente a la base de datos!"))
   .catch((err) => console.error("❌ Error:", err));
 </script>
-<!-- Ya acabo lo de firebase -->
 
 </body>
 </html>
