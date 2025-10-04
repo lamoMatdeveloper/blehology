@@ -1,51 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head> /*Hecho por diego*/
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>page</title>
-    <style>
-     body {
-          margin: 0;
-        min-height: 100vh; /* Full viewport height */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-image: url('thebackdrop.jpg'); /* Replace with your image path */
-        background-size: cover;
-        position: relative;
-    }
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nasa BioScience Explorer</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
 
-        .BoxBase {
-        position: absolute;
-        width: 40%;
-        height: 100vh;
-        background: rgba(0,0,0,0.15);
-        backdrop-filter: blur(3px); /* Blur effect */
-        webkit-backdrop-filter: blur(3px); /* For Safari */
-        border-radius: 20px; /* Rounded corners */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-family: Arial, sans-serif;
-        font-size: 18px;
-        -webkit-box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
-        -moz-box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
-        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
-        border: 3px solid rgba(100, 100, 100, 0.1);
-      
-    }
-    </style>
-</head>
-<body>
-    <div class="BoxBase" style="width: 20%; height: 86vh; left: 1%; top: 2vh;">Side bar
-       <div class="BoxBase" style="width: 20%; height: 6vh; top: 2vh;"> Search Bar </div>
-    </div>
-    <div class="BoxBase" style="width: 20%; height: 6vh; left: 1%; bottom: 2vh;"> Search Bar </div>
-    <div class="BoxBase" style="width: 52%; height: 5vh; top: 2vh;"> Search Bar </div>
-    <div class="BoxBase" style="width: 20%; height: 96vh; right: 1%;">AI Chat</div>
-    <div class="BoxBase" style="width: 52%; height: 86vh; bottom: 2vh;">Random Articles</div>
-</body>
-</html>
+<!-- Esto es para firebase, ADRIAN -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+  
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyCIU-q88QGBqNmydsvnB_HaoONK1SNEAzE",
+    authDomain: "blehology.firebaseapp.com",
+    databaseURL: "https://blehology-default-rtdb.firebaseio.com",
+    projectId: "blehology",
+    storageBucket: "blehology.firebasestorage.app",
+    messagingSenderId: "166464430045",
+    appId: "1:166464430045:web:77566d918ba41c43c86034",
+    measurementId: "G-T2T1QWYQ2"
+  };
+  
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const rootRef = ref(database);
+  const itemsRef = ref(database, 'items');
+  
+  //Push data to your new database
+  let TextoAPublicar = "Coso";
 
+  const newItemRef = push(itemsRef);
+  set(newItemRef, {Tag1: TextoAPublicar})
+  
+  //post-publish analysis
+  .then(() => console.log("Se ha subido '", TextoAPublicar ,"' correctamente a la base de datos!"))
+  .catch((err) => console.error("❌ Error:", err));
+</script>
+<!-- Ya acabo lo de firebase, ADRIAN-->
+<h1>Hola Mundo</h1> 
+  </body>
+  </html>
