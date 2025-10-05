@@ -29,7 +29,7 @@
     .btn-level.active, .btn-format.active, .btn-unit.active { background: rgba(11, 192, 164, 0.3); }
   </style>
 </head>
-<body class="bg-gradient-to-br from-[#0f3d3a] via-[#2f574d] to-[#e6d4b8] text-slate-100 min-h-screen">
+<body class="bg-gradient-to-br from-[#0f3d3a] via-[#2f574d] to-[#e6d4b8] text-slate-100 min-h-screen" style="background: transparent;">
 
   <!-- Top Bar -->
   <header class="w-full h-16 px-6 flex items-center justify-between border-b border-white/10 backdrop-blur-xl bg-white/5">
@@ -38,14 +38,15 @@
       <nav class="flex gap-5 text-sm text-slate-300">
       </nav>
     </div>
-
+  
       <button id="settings-btn" class="text-sm text-slate-300 hover:text-white">⚙️ Settings</button>
     </div>
   </header>
 
+  <img src="BlehAlien.gif" alt="This is Bleh, a very helpful alien." style="opacity: 0.8; align-self: center; justify-self: center;">
   <!-- Chat Container -->
-  <main class="flex-1 grid place-items-center px-6 py-6">
-    <div class="w-full max-w-4xl rounded-2xl bg-white/10 border border-white/10 backdrop-blur-xl flex flex-col overflow-hidden scrollable">
+  <main class="flex-1 grid place-items-center px-6 py-6" style="position: absolute; bottom: 0px;">
+    <div class="w-full max-w-4xl rounded-2xl bg-white/10 border border-white/10 backdrop-blur-xl flex flex-col overflow-hidden scrollable" style="height: 50vh;">
       <div id="messages" class="messages space-y-4"></div>
       <div class="composer flex gap-2">
         <textarea
