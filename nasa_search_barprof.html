@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche d'articles NASA</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0B3D91 0%, #1a1a2e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            color: #b0c4de;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .search-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 16px;
+            border: 2px solid #0B3D91;
+            border-radius: 25px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #FC3D21;
+            box-shadow: 0 0 10px rgba(252, 61, 33, 0.2);
+        }
+
+        .search-button {
+            padding: 15px 30px;
+            background: #0B3D91;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            background: #FC3D21;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(252, 61, 33, 0.3);
+        }
+
+        .results-info {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .results-container {
+            display: grid;
+            gap: 20px;
+        }
+
+        .result-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .result-title {
+            color: #0B3D91;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .result-content {
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .result-meta {
+            color: #666;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            color: #666;
+        }
+
+        .loading {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            padding: 20px;
+        }
+
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🚀</div>
+            <h1>Recherche NASA</h1>
+            <p class="subtitle">Explorez les articles de notre base de données</p>
+        </div>
+        
+        <div class="search-container">
+            <form class="search-form" id="searchForm">
+                <input 
+                    type="text" 
+                    id="searchInput"
+                    class="search-input" 
+                    placeholder="Entrez votre recherche (titre, contenu, mots-clés...)"
+                    required
+                >
+                <button type="submit" class="search-button">🔍 Rechercher</button>
+            </form>
+            <div class="results-info" id="resultsInfo"></div>
+        </div>
+
+        <div id="loadingMessage" class="loading" style="display: none;">
+            Chargement des données...
+        </div>
+
+        <div class="results-container" id="resultsContainer"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCIU-q88QGBqNmydsvnB_HaoONK1SNEAzE",
+            authDomain: "blehology.firebaseapp.com",
+            databaseURL: "https://blehology-default-rtdb.firebaseio.com/",
+            projectId: "blehology",
+            storageBucket: "blehology.firebasestorage.app",
+            messagingSenderId: "166464430045", 
+            appId: "1:166464430045:web:77566d918ba41c43c86034",
+            measurementId: "G-T2T1QWYQ2"
+        };
+        
+        // Initialiser Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const itemsRef = ref(database, 'NASA ROOT');
+        
+        let allData = null;
+        
+        // Charger les données
+        document.getElementById('loadingMessage').style.display = 'block';
+        
+        onValue(itemsRef, (snapshot) => {
+            allData = snapshot.val();
+            document.getElementById('loadingMessage').style.display = 'none';
+            document.getElementById('resultsInfo').textContent = `Base de données chargée. ${allData ? Object.keys(allData).length : 0} entrées disponibles.`;
+        });
+        
+        // Fonction de recherche
+        function searchData(query) {
+            if (!allData) {
+                return [];
+            }
+            
+            const queryLower = query.toLowerCase();
+            const results = [];
+            
+            // Fonction récursive pour chercher dans les objets imbriqués
+            function searchInObject(obj, path = '') {
+                let matches = [];
+                
+                if (typeof obj === 'object' && obj !== null) {
+                    Object.keys(obj).forEach(key => {
+                        const value = obj[key];
+                        const currentPath = path ? `${path}.${key}` : key;
+                        
+                        if (typeof value === 'string' || typeof value === 'number') {
+                            const stringValue = String(value).toLowerCase();
+                            if (stringValue.includes(queryLower)) {
+                                matches.push({
+                                    field: currentPath,
+                                    value: value
+                                });
+                            }
+                        } else if (typeof value === 'object') {
+                            matches = matches.concat(searchInObject(value, currentPath));
+                        }
+                    });
+                }
+                
+                return matches;
+            }
+            
+            // Parcourir tous les éléments de la base de données
+            Object.keys(allData).forEach(key => {
+                const item = allData[key];
+                const matchedFields = searchInObject(item);
+                
+                // IMPORTANT: Chercher aussi dans le titre (clé) de l'entrée
+                if (key.toLowerCase().includes(queryLower)) {
+                    matchedFields.push({
+                        field: 'Titre',
+                        value: key
+                    });
+                }
+                
+                if (matchedFields.length > 0) {
+                    results.push({
+                        id: key,
+                        data: item,
+                        matchedFields: matchedFields
+                    });
+                }
+            });
+            
+            return results;
+        }
+        
+        // Fonction pour surligner le texte recherché
+        function highlightText(text, query) {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return String(text).replace(regex, '<span class="highlight">$1</span>');
+        }
+        
+        // Afficher les résultats
+        function displayResults(results, query) {
+            const container = document.getElementById('resultsContainer');
+            const info = document.getElementById('resultsInfo');
+            
+            container.innerHTML = '';
+            
+            if (results.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <h3>Aucun résultat trouvé</h3>
+                        <p>Essayez avec d'autres termes de recherche.</p>
+                    </div>
+                `;
+                info.textContent = '0 résultat trouvé';
+                return;
+            }
+            
+            info.textContent = `${results.length} résultat${results.length > 1 ? 's' : ''} trouvé${results.length > 1 ? 's' : ''}`;
+            
+            results.forEach(result => {
+                const card = document.createElement('div');
+                card.className = 'result-card';
+                
+                // Créer le contenu de la carte
+                let cardContent = `<div class="result-title">📄 Entrée: ${result.id}</div>`;
+                
+                // Afficher tous les champs qui correspondent
+                result.matchedFields.forEach(match => {
+                    const valueStr = String(match.value);
+                    // Limiter la longueur pour les textes longs
+                    let displayValue = valueStr;
+                    if (valueStr.length > 300) {
+                        // Trouver la position du terme recherché et afficher un extrait autour
+                        const pos = valueStr.toLowerCase().indexOf(query.toLowerCase());
+                        if (pos !== -1) {
+                            const start = Math.max(0, pos - 100);
+                            const end = Math.min(valueStr.length, pos + 200);
+                            displayValue = (start > 0 ? '...' : '') + 
+                                         valueStr.substring(start, end) + 
+                                         (end < valueStr.length ? '...' : '');
+                        } else {
+                            displayValue = valueStr.substring(0, 300) + '...';
+                        }
+                    }
+                    
+                    // Vérifier si c'est un lien HTTP/HTTPS et le rendre cliquable
+                    let formattedValue = highlightText(displayValue, query);
+                    if (valueStr.startsWith('http://') || valueStr.startsWith('https://')) {
+                        formattedValue = `<a href="${valueStr}" target="_blank" rel="noopener noreferrer" style="color: #0B3D91; text-decoration: underline;">${highlightText(displayValue, query)}</a>`;
+                    }
+                    
+                    cardContent += `
+                        <div class="result-content">
+                            <strong>${match.field}:</strong> ${formattedValue}
+                        </div>
+                    `;
+                });
+                
+                // Afficher un aperçu d'autres champs pour le contexte
+                const displayedFields = result.matchedFields.map(m => m.field);
+                let contextCount = 0;
+                
+                function addContext(obj, path = '') {
+                    if (contextCount >= 3) return;
+                    
+                    Object.keys(obj).forEach(key => {
+                        if (contextCount >= 3) return;
+                        
+                        const currentPath = path ? `${path}.${key}` : key;
+                        const value = obj[key];
+                        
+                        if (!displayedFields.includes(currentPath)) {
+                            if (typeof value === 'string' || typeof value === 'number') {
+                                const valueStr = String(value);
+                                const displayStr = valueStr.substring(0, 100);
+                                
+                                // Rendre les liens cliquables dans le contexte aussi
+                                let formattedContext;
+                                if (valueStr.startsWith('http://') || valueStr.startsWith('https://')) {
+                                    formattedContext = `<a href="${valueStr}" target="_blank" rel="noopener noreferrer" style="color: #666; text-decoration: underline;">${displayStr}${valueStr.length > 100 ? '...' : ''}</a>`;
+                                } else {
+                                    formattedContext = displayStr + (valueStr.length > 100 ? '...' : '');
+                                }
+                                
+                                cardContent += `
+                                    <div class="result-meta">
+                                        📌 ${currentPath}: ${formattedContext}
+                                    </div>
+                                `;
+                                contextCount++;
+                            } else if (typeof value === 'object' && value !== null) {
+                                addContext(value, currentPath);
+                            }
+                        }
+                    });
+                }
+                
+                addContext(result.data);
+                
+                card.innerHTML = cardContent;
+                container.appendChild(card);
+            });
+        }
+        
+        // Gérer la soumission du formulaire
+        document.getElementById('searchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const query = document.getElementById('searchInput').value.trim();
+            
+            if (!query) {
+                alert('Veuillez entrer un terme de recherche');
+                return;
+            }
+            
+            if (!allData) {
+                alert('Les données sont encore en cours de chargement. Veuillez patienter.');
+                return;
+            }
+            
+            const results = searchData(query);
+            displayResults(results, query);
+        });
+    </script>
+</body>
+</html>
