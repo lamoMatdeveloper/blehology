@@ -49,6 +49,12 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
+
+      /* Custom placeholder color */
+      .form-control::placeholder {
+        color: #ccc; /* Light gray color for placeholder */
+        opacity: 1; /* Override bootstrap's default opacity */
+      }
     </style>
   </head>
   <body>
@@ -71,7 +77,7 @@
         <!-- Main Content -->
         <div class="col-lg-7 d-flex flex-column gap-3">
           <div class="card glass-card p-2">
-            <input type="text" placeholder="Search..." class="form-control form-control-lg bg-transparent text-white border-0">
+            <input type="text" placeholder="Search..." class="form-control form-control-lg bg-transparent text-white border-0" style="color: white;">
           </div>
           <div class="card glass-card flex-grow-1 p-3 overflow-auto">
             <!-- Article 1 -->
