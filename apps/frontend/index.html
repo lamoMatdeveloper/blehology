@@ -153,7 +153,7 @@
       const app = initializeApp(firebaseConfig);
       const database = getDatabase(app);
       const rootRef = ref(database);
-      const itemsRef = ref(database, 'create');
+      const itemsRef = ref(database, 'NASA ROOT');
       
       //Read data from your database
       onValue(itemsRef, (snapshot) => {
