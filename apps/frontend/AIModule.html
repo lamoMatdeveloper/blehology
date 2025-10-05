@@ -5,19 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>BLEHOLOGY — Local Prototype</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'bleh-bg-1': '#0f3d3a',
-            'bleh-bg-2': '#2f574d',
-            'bleh-bg-3': '#e6d4b8',
-          }
-        }
-      }
-    };
-  </script>
   <style>
     body { font-family: system-ui, sans-serif; }
     .message-user { background-color: rgba(11, 192, 164, 0.2); }
@@ -25,32 +12,33 @@
     .scrollable { display: flex; flex-direction: column; height: 75vh; }
     .messages { flex: 1; overflow-y: auto; padding: 1rem; }
     .composer { padding: 0.75rem; background: rgba(14, 24, 41, 0.6); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.1); }
+    /* Markdown rendering */
+    .markdown-content p { margin: 0.5rem 0; }
+    .markdown-content ul, .markdown-content ol { padding-left: 1.5rem; margin: 0.5rem 0; }
+    .markdown-content li { margin: 0.25rem 0; }
+    .markdown-content code { background: rgba(255,255,255,0.1); padding: 0.2rem 0.4rem; border-radius: 0.25rem; font-family: monospace; font-size: 0.9em; }
+    .markdown-content pre { background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 0.5rem; overflow-x: auto; margin: 0.75rem 0; }
+    .markdown-content pre code { background: none; padding: 0; }
+    .markdown-content blockquote { border-left: 3px solid #09C3D6; padding-left: 1rem; margin: 0.5rem 0; color: #ccc; font-style: italic; }
+    .markdown-content strong { font-weight: 600; color: #a7f3d0; }
+    .markdown-content em { font-style: italic; }
+    /* Settings modal */
     .settings-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; }
     .settings-content { background: #0E1829; margin: 2rem auto; padding: 1.5rem; width: 90%; max-width: 500px; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.1); }
     .btn-level, .btn-format, .btn-unit { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.8rem; cursor: pointer; }
     .btn-level.active, .btn-format.active, .btn-unit.active { background: rgba(11, 192, 164, 0.3); }
   </style>
 </head>
-<body class="bg-gradient-to-br from-bleh-bg-1 via-bleh-bg-2 to-bleh-bg-3 text-slate-100 min-h-screen">
+<body class="bg-gradient-to-br from-[#0f3d3a] via-[#2f574d] to-[#e6d4b8] text-slate-100 min-h-screen">
 
   <!-- Top Bar -->
   <header class="w-full h-16 px-6 flex items-center justify-between border-b border-white/10 backdrop-blur-xl bg-white/5">
     <div class="flex items-center gap-6">
       <h1 class="text-lg font-semibold tracking-wide">BLEHOLOGY</h1>
       <nav class="flex gap-5 text-sm text-slate-300">
-        <button class="hover:text-white">Home</button>
-        <button class="hover:text-white">Favorites</button>
-        <button class="hover:text-white">Collections</button>
-        <button class="hover:text-white">Notes</button>
       </nav>
     </div>
-    <div class="flex items-center gap-3">
-      <div class="relative">
-        <svg class="w-4 h-4 absolute left-2 top-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-width="1.5" d="m21 21-4.35-4.35M10 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z"/>
-        </svg>
-        <input placeholder="Search..." class="pl-8 pr-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-100 placeholder:text-slate-400 outline-none w-40"/>
-      </div>
+
       <button id="settings-btn" class="text-sm text-slate-300 hover:text-white">⚙️ Settings</button>
     </div>
   </header>
@@ -143,8 +131,7 @@
   <script>
     // 🔑 DeepSeek API (local prototype only!)
     const DEEPSEEK_API_KEY = "sk-58fe2e04c98e498280195ef6cd98c784";
-    // ✅ FIXED: No trailing spaces!
-    const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
+    const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions"; // ✅ No trailing spaces!
 
     const messagesEl = document.getElementById("messages");
     const inputEl = document.getElementById("user-input");
@@ -156,7 +143,6 @@
     let messages = [];
     let isLoading = false;
 
-    // Default prefs
     let userPrefs = {
       reading_level: "basic",
       answer_length: "medium",
@@ -165,7 +151,6 @@
       mode: "auto"
     };
 
-    // Load from localStorage
     function loadPrefs() {
       const saved = localStorage.getItem("bleh_prefs");
       if (saved) {
@@ -197,12 +182,25 @@
 
     const idGen = () => Math.random().toString(36).slice(2);
 
+    function renderMarkdown(text) {
+      if (!text) return "";
+      return text
+        .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+        .replace(/`([^`]+)`/g, '<code>$1</code>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/^>\s+(.*)$/gm, '<blockquote>$1</blockquote>')
+        .replace(/^-\s+(.*)$/gm, '<ul><li>$1</li></ul>')
+        .replace(/^\d+\.\s+(.*)$/gm, '<ol><li>$1</li></ol>')
+        .replace(/\n/g, '<br>');
+    }
+
     function addMessage(role, text, id = idGen()) {
       const div = document.createElement("div");
       div.className = `flex ${role === "user" ? "justify-end" : "justify-start"}`;
       div.innerHTML = `
         <div class="px-4 py-2 rounded-2xl text-sm ${role === "user" ? "message-user" : "message-assistant"}">
-          ${text.replace(/\n/g, "<br>")}
+          <div class="markdown-content">${renderMarkdown(text)}</div>
         </div>
       `;
       messagesEl.appendChild(div);
@@ -211,7 +209,6 @@
       return id;
     }
 
-    // ✅ Optimized system prompt (shorter but keeps BLEH identity)
     function getSystemPrompt() {
       return `[SYSTEM — BLEH/blehology v1.2 — EN]
 You are BLEH, NASA biosciences assistant. Mission: make space biology knowledge accurate, understandable, and useful.
@@ -232,6 +229,29 @@ Rules:
 6. Keep answers low-noise, high-signal.`;
     }
 
+    // 🔢 Estimate tokens (1 token ≈ 4 chars)
+    function estimateTokens(str) {
+      return Math.ceil(str.length / 4);
+    }
+
+    // 🧹 Trim old messages if total tokens > limit
+    function trimMessages(messages, systemPrompt, newUserMessage, maxTokens = 3500) {
+      const systemTokens = estimateTokens(systemPrompt);
+      const userTokens = estimateTokens(newUserMessage);
+      const buffer = 500; // Leave room for response
+      let total = systemTokens + userTokens;
+      let trimmed = [];
+
+      for (let i = messages.length - 1; i >= 0; i--) {
+        const msgTokens = estimateTokens(messages[i].text);
+        if (total + msgTokens > maxTokens - buffer) break;
+        total += msgTokens;
+        trimmed.unshift(messages[i]);
+      }
+
+      return trimmed;
+    }
+
     async function sendMessage() {
       const val = inputEl.value.trim();
       if (!val || isLoading) return;
@@ -242,9 +262,12 @@ Rules:
 
       addMessage("user", val);
 
+      const systemPrompt = getSystemPrompt();
+      const trimmedHistory = trimMessages(messages, systemPrompt, val);
+      
       const apiMessages = [
-        { role: "system", content: getSystemPrompt() },
-        ...messages.map(m => ({ role: m.role, content: m.text })),
+        { role: "system", content: systemPrompt },
+        ...trimmedHistory.map(m => ({ role: m.role, content: m.text })),
         { role: "user", content: val }
       ];
 
@@ -279,7 +302,7 @@ Rules:
           const lines = chunk.split("\n").filter(line => line.trim() !== "");
 
           for (const line of lines) {
-            // ✅ FIXED: Correct SSE parsing
+            // ✅ DeepSeek uses "data: {...}"
             if (line.startsWith("data: ")) {
               const data = line.substring(6).trim();
               if (data === "[DONE]") continue;
@@ -291,7 +314,7 @@ Rules:
                   fullText += token;
                   const lastMsg = messagesEl.lastChild;
                   if (lastMsg) {
-                    lastMsg.querySelector("div").innerHTML = fullText.replace(/\n/g, "<br>");
+                    lastMsg.querySelector(".markdown-content").innerHTML = renderMarkdown(fullText);
                     messagesEl.scrollTop = messagesEl.scrollHeight;
                   }
                 }
@@ -313,7 +336,7 @@ Rules:
       }
     }
 
-    // Settings modal
+    // Settings modal handlers
     settingsBtn.addEventListener("click", () => settingsModal.style.display = "block");
     closeSettings.addEventListener("click", () => settingsModal.style.display = "none");
     window.addEventListener("click", (e) => {
