@@ -162,89 +162,91 @@ html {
     </div>
   </div>
 
-  <script>
-    // 🔑 DeepSeek API (local prototype only!)
-    const DEEPSEEK_API_KEY = "sk-58fe2e04c98e498280195ef6cd98c784";
-    const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions"; // ✅ No trailing spaces!
+<script>
+  // 🔑 DeepSeek API (local prototype only!)
+  const DEEPSEEK_API_KEY = "sk-58fe2e04c98e498280195ef6cd98c784";
+  const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
 
-    const messagesEl = document.getElementById("messages");
-    const inputEl = document.getElementById("user-input");
-    const sendBtn = document.getElementById("send-btn");
-    const settingsBtn = document.getElementById("settings-btn");
-    const closeSettings = document.getElementById("close-settings");
-    const settingsModal = document.getElementById("settings-modal");
+  const messagesEl = document.getElementById("messages");
+  const inputEl = document.getElementById("user-input");
+  const sendBtn = document.getElementById("send-btn");
+  const settingsBtn = document.getElementById("settings-btn");
+  const closeSettings = document.getElementById("close-settings");
+  const settingsModal = document.getElementById("settings-modal");
 
-    let messages = [];
-    let isLoading = false;
+  let messages = [];
+  let isLoading = false;
 
-    let userPrefs = {
-      reading_level: "basic",
-      answer_length: "medium",
-      format: "paragraph",
-      units: "SI",
-      mode: "auto"
-    };
+  let userPrefs = {
+    reading_level: "basic",
+    answer_length: "medium",
+    format: "paragraph",
+    units: "SI",
+    mode: "auto",
+    tts_enabled: true
+  };
 
-    function loadPrefs() {
-      const saved = localStorage.getItem("bleh_prefs");
-      if (saved) {
-        try {
-          userPrefs = {...userPrefs, ...JSON.parse(saved)};
-        } catch (e) {}
-      }
-      applyPrefs();
+  function loadPrefs() {
+    const saved = localStorage.getItem("bleh_prefs");
+    if (saved) {
+      try {
+        userPrefs = { ...userPrefs, ...JSON.parse(saved) };
+      } catch (e) {}
     }
+    applyPrefs();
+  }
 
-    function savePrefs() {
-      localStorage.setItem("bleh_prefs", JSON.stringify(userPrefs));
-      applyPrefs();
-    }
+  function savePrefs() {
+    localStorage.setItem("bleh_prefs", JSON.stringify(userPrefs));
+    applyPrefs();
+  }
 
-    function applyPrefs() {
-      document.getElementById("answer-length").value = userPrefs.answer_length;
-      document.getElementById("mode-select").value = userPrefs.mode;
-      document.querySelectorAll(".btn-level").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.level === userPrefs.reading_level);
-      });
-      document.querySelectorAll(".btn-format").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.format === userPrefs.format);
-      });
-      document.querySelectorAll(".btn-unit").forEach(btn => {
-        btn.classList.toggle("active", btn.dataset.unit === userPrefs.units);
-      });
-    }
+  function applyPrefs() {
+    document.getElementById("answer-length").value = userPrefs.answer_length;
+    document.getElementById("mode-select").value = userPrefs.mode;
+    document.getElementById("tts-enabled").checked = userPrefs.tts_enabled;
+    document.querySelectorAll(".btn-level").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.level === userPrefs.reading_level);
+    });
+    document.querySelectorAll(".btn-format").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.format === userPrefs.format);
+    });
+    document.querySelectorAll(".btn-unit").forEach(btn => {
+      btn.classList.toggle("active", btn.dataset.unit === userPrefs.units);
+    });
+  }
 
-    const idGen = () => Math.random().toString(36).slice(2);
+  const idGen = () => Math.random().toString(36).slice(2);
 
-    function renderMarkdown(text) {
-      if (!text) return "";
-      return text
-        .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
-        .replace(/`([^`]+)`/g, '<code>$1</code>')
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
-        .replace(/^>\s+(.*)$/gm, '<blockquote>$1</blockquote>')
-        .replace(/^-\s+(.*)$/gm, '<ul><li>$1</li></ul>')
-        .replace(/^\d+\.\s+(.*)$/gm, '<ol><li>$1</li></ol>')
-        .replace(/\n/g, '<br>');
-    }
+  function renderMarkdown(text) {
+    if (!text) return "";
+    return text
+      .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/^>\s+(.*)$/gm, '<blockquote>$1</blockquote>')
+      .replace(/^-\s+(.*)$/gm, '<ul><li>$1</li></ul>')
+      .replace(/^\d+\.\s+(.*)$/gm, '<ol><li>$1</li></ol>')
+      .replace(/\n/g, '<br>');
+  }
 
-    function addMessage(role, text, id = idGen()) {
-      const div = document.createElement("div");
-      div.className = `flex ${role === "user" ? "justify-end" : "justify-start"}`;
-      div.innerHTML = `
-        <div class="px-4 py-2 rounded-2xl text-sm ${role === "user" ? "message-user" : "message-assistant"}">
-          <div class="markdown-content">${renderMarkdown(text)}</div>
-        </div>
-      `;
-      messagesEl.appendChild(div);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-      messages.push({ id, role, text });
-      return id;
-    }
+  function addMessage(role, text, id = idGen()) {
+    const div = document.createElement("div");
+    div.className = `flex ${role === "user" ? "justify-end" : "justify-start"}`;
+    div.innerHTML = `
+      <div class="px-4 py-2 rounded-2xl text-sm ${role === "user" ? "message-user" : "message-assistant"}">
+        <div class="markdown-content">${renderMarkdown(text)}</div>
+      </div>
+    `;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    messages.push({ id, role, text });
+    return id;
+  }
 
-    function getSystemPrompt() {
-      return `[SYSTEM — BLEH/blehology v1.2 — EN]
+  function getSystemPrompt() {
+    return `[SYSTEM — BLEH/blehology v1.2 — EN]
 You are BLEH, NASA biosciences assistant. Mission: make space biology knowledge accurate, understandable, and useful.
 
 User profile:
@@ -255,188 +257,210 @@ User profile:
 - Mode: ${userPrefs.mode}
 
 Rules:
-1. Always respond in either English or Spanish.
+1. Always respond in English.
 2. In "research" mode: cite sources, be evidence-based.
 3. In "conversational" mode: be brief (2–6 lines), no citations unless asked.
 4. Never invent data. If unsure, say so.
 5. Use Markdown: **bold**, *italic*, \`code\`, lists.
 6. Keep answers low-noise, high-signal.`;
+  }
+
+  function estimateTokens(str) {
+    return Math.ceil(str.length / 4);
+  }
+
+  function trimMessages(messages, systemPrompt, newUserMessage, maxTokens = 3500) {
+    const systemTokens = estimateTokens(systemPrompt);
+    const userTokens = estimateTokens(newUserMessage);
+    const buffer = 500;
+    let total = systemTokens + userTokens;
+    let trimmed = [];
+
+    for (let i = messages.length - 1; i >= 0; i--) {
+      const msgTokens = estimateTokens(messages[i].text);
+      if (total + msgTokens > maxTokens - buffer) break;
+      total += msgTokens;
+      trimmed.unshift(messages[i]);
     }
 
-    // 🔢 Estimate tokens (1 token ≈ 4 chars)
-    function estimateTokens(str) {
-      return Math.ceil(str.length / 4);
-    }
+    return trimmed;
+  }
 
-    // 🧹 Trim old messages if total tokens > limit
-    function trimMessages(messages, systemPrompt, newUserMessage, maxTokens = 3500) {
-      const systemTokens = estimateTokens(systemPrompt);
-      const userTokens = estimateTokens(newUserMessage);
-      const buffer = 500; // Leave room for response
-      let total = systemTokens + userTokens;
-      let trimmed = [];
+  function speakText(text) {
+    if (!userPrefs.tts_enabled) return;
+    speechSynthesis.cancel();
 
-      for (let i = messages.length - 1; i >= 0; i--) {
-        const msgTokens = estimateTokens(messages[i].text);
-        if (total + msgTokens > maxTokens - buffer) break;
-        total += msgTokens;
-        trimmed.unshift(messages[i]);
-      }
+    const cleanText = text
+      .replace(/[*_~`]/g, '')
+      .replace(/```[\s\S]*?```/g, '')
+      .replace(/`[^`]*`/g, '')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+      .replace(/>\s*/g, '')
+      .replace(/\n+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
 
-      return trimmed;
-    }
+    if (!cleanText) return;
 
-    async function sendMessage() {
-      const val = inputEl.value.trim();
-      if (!val || isLoading) return;
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 0.9;
+    utterance.pitch = 1.1;
+    utterance.lang = 'en-US';
+    speechSynthesis.speak(utterance);
+  }
 
-      inputEl.value = "";
-      isLoading = true;
-      sendBtn.disabled = true;
+  async function sendMessage() {
+    const val = inputEl.value.trim();
+    if (!val || isLoading) return;
 
-      addMessage("user", val);
+    inputEl.value = "";
+    isLoading = true;
+    sendBtn.disabled = true;
 
-      const systemPrompt = getSystemPrompt();
-      const trimmedHistory = trimMessages(messages, systemPrompt, val);
-      
-      const apiMessages = [
-        { role: "system", content: systemPrompt },
-        ...trimmedHistory.map(m => ({ role: m.role, content: m.text })),
-        { role: "user", content: val }
-      ];
+    addMessage("user", val);
 
-      try {
-        const response = await fetch(DEEPSEEK_API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${DEEPSEEK_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: "deepseek-chat",
-            messages: apiMessages,
-            stream: true,
-            temperature: 0.7,
-          }),
-        });
+    const systemPrompt = getSystemPrompt();
+    const trimmedHistory = trimMessages(messages, systemPrompt, val);
 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        if (!response.body) throw new Error("No stream support");
+    const apiMessages = [
+      { role: "system", content: systemPrompt },
+      ...trimmedHistory.map(m => ({ role: m.role, content: m.text })),
+      { role: "user", content: val }
+    ];
 
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let fullText = "";
-        const msgId = addMessage("assistant", "");
+    try {
+      const response = await fetch(DEEPSEEK_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${DEEPSEEK_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: "deepseek-chat",
+          messages: apiMessages,
+          stream: true,
+          temperature: 0.7,
+        }),
+      });
 
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      if (!response.body) throw new Error("No stream support");
 
-          const chunk = decoder.decode(value, { stream: true });
-          const lines = chunk.split("\n").filter(line => line.trim() !== "");
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let fullText = "";
+      const msgId = addMessage("assistant", "");
 
-          for (const line of lines) {
-            // ✅ DeepSeek uses "data: {...}"
-            if (line.startsWith("data: ")) {
-              const data = line.substring(6).trim();
-              if (data === "[DONE]") continue;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-              try {
-                const json = JSON.parse(data);
-                const token = json.choices[0]?.delta?.content || "";
-                if (token) {
-                  fullText += token;
-                  const lastMsg = messagesEl.lastChild;
-                  if (lastMsg) {
-                    lastMsg.querySelector(".markdown-content").innerHTML = renderMarkdown(fullText);
-                    messagesEl.scrollTop = messagesEl.scrollHeight;
-                  }
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split("\n").filter(line => line.trim() !== "");
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const data = line.substring(6).trim();
+            if (data === "[DONE]") continue;
+
+            try {
+              const json = JSON.parse(data);
+              const token = json.choices[0]?.delta?.content || "";
+              if (token) {
+                fullText += token;
+                const lastMsg = messagesEl.lastChild;
+                if (lastMsg) {
+                  lastMsg.querySelector(".markdown-content").innerHTML = renderMarkdown(fullText);
+                  messagesEl.scrollTop = messagesEl.scrollHeight;
                 }
-              } catch (e) {
-                console.warn("Parse error", line);
               }
+            } catch (e) {
+              console.warn("Parse error", line);
             }
           }
         }
-
-        messages[messages.length - 1].text = fullText;
-
-      } catch (err) {
-        console.error("Error:", err);
-        addMessage("assistant", `⚠️ Error: ${err.message}`);
-      } finally {
-        isLoading = false;
-        sendBtn.disabled = false;
       }
+
+      messages[messages.length - 1].text = fullText;
+      speakText(fullText); // 👈 TTS triggered here
+
+    } catch (err) {
+      console.error("Error:", err);
+      addMessage("assistant", `⚠️ Error: ${err.message}`);
+    } finally {
+      isLoading = false;
+      sendBtn.disabled = false;
     }
+  }
 
-    // Settings modal handlers
-    settingsBtn.addEventListener("click", () => settingsModal.style.display = "block");
-    closeSettings.addEventListener("click", () => settingsModal.style.display = "none");
-    window.addEventListener("click", (e) => {
-      if (e.target === settingsModal) settingsModal.style.display = "none";
+  // Settings modal handlers
+  settingsBtn.addEventListener("click", () => settingsModal.style.display = "block");
+  closeSettings.addEventListener("click", () => settingsModal.style.display = "none");
+  window.addEventListener("click", (e) => {
+    if (e.target === settingsModal) settingsModal.style.display = "none";
+  });
+
+  document.getElementById("save-settings").addEventListener("click", () => {
+    userPrefs.reading_level = document.querySelector(".btn-level.active").dataset.level;
+    userPrefs.answer_length = document.getElementById("answer-length").value;
+    userPrefs.format = document.querySelector(".btn-format.active").dataset.format;
+    userPrefs.units = document.querySelector(".btn-unit.active").dataset.unit;
+    userPrefs.mode = document.getElementById("mode-select").value;
+    userPrefs.tts_enabled = document.getElementById("tts-enabled").checked;
+    savePrefs();
+    settingsModal.style.display = "none";
+    alert("Settings saved!");
+  });
+
+  document.getElementById("reset-settings").addEventListener("click", () => {
+    userPrefs = {
+      reading_level: "basic",
+      answer_length: "medium",
+      format: "paragraph",
+      units: "SI",
+      mode: "auto",
+      tts_enabled: true
+    };
+    savePrefs();
+    alert("Settings reset.");
+  });
+
+  document.querySelectorAll(".btn-level").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".btn-level").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
     });
+  });
 
-    document.getElementById("save-settings").addEventListener("click", () => {
-      userPrefs.reading_level = document.querySelector(".btn-level.active").dataset.level;
-      userPrefs.answer_length = document.getElementById("answer-length").value;
-      userPrefs.format = document.querySelector(".btn-format.active").dataset.format;
-      userPrefs.units = document.querySelector(".btn-unit.active").dataset.unit;
-      userPrefs.mode = document.getElementById("mode-select").value;
-      savePrefs();
-      settingsModal.style.display = "none";
-      alert("Settings saved!");
+  document.querySelectorAll(".btn-format").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".btn-format").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
     });
+  });
 
-    document.getElementById("reset-settings").addEventListener("click", () => {
-      userPrefs = {
-        reading_level: "basic",
-        answer_length: "medium",
-        format: "paragraph",
-        units: "SI",
-        mode: "auto"
-      };
-      savePrefs();
-      alert("Settings reset.");
+  document.querySelectorAll(".btn-unit").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".btn-unit").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
     });
+  });
 
-    // Toggle buttons
-    document.querySelectorAll(".btn-level").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".btn-level").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-      });
-    });
+  sendBtn.addEventListener("click", sendMessage);
+  inputEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
 
-    document.querySelectorAll(".btn-format").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".btn-format").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-      });
-    });
+  // Welcome message
+  setTimeout(() => {
+    addMessage("assistant", "Hello! I'm **BLEH**, your NASA biosciences assistant. Ask me anything about space biology, human health in orbit, or GeneLab data!");
+  }, 300);
 
-    document.querySelectorAll(".btn-unit").forEach(btn => {
-      btn.addEventListener("click", () => {
-        document.querySelectorAll(".btn-unit").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-      });
-    });
-
-    // Send
-    sendBtn.addEventListener("click", sendMessage);
-    inputEl.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
-    });
-
-    // Welcome
-    setTimeout(() => {
-      addMessage("assistant", "Hello! I'm **BLEH**, your NASA biosciences assistant. Ask me anything about space biology, human health in orbit, or GeneLab data!");
-    }, 300);
-
-    loadPrefs();
-  </script>
+  loadPrefs();
+</script>
+  
 </body>
 </html>
