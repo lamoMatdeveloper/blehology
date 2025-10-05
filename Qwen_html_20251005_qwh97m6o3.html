@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BLEHOLOGY — Local Prototype</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'bleh-bg-1': '#0f3d3a',
+            'bleh-bg-2': '#2f574d',
+            'bleh-bg-3': '#e6d4b8',
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: system-ui, sans-serif; }
+    .message-user { background-color: rgba(11, 192, 164, 0.2); }
+    .message-assistant { background-color: rgba(255, 255, 255, 0.1); }
+    .scrollable { display: flex; flex-direction: column; height: 75vh; }
+    .messages { flex: 1; overflow-y: auto; padding: 1rem; }
+    .composer { padding: 0.75rem; background: rgba(14, 24, 41, 0.6); backdrop-filter: blur(12px); border-top: 1px solid rgba(255,255,255,0.1); }
+    .settings-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; }
+    .settings-content { background: #0E1829; margin: 2rem auto; padding: 1.5rem; width: 90%; max-width: 500px; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.1); }
+    .btn-level, .btn-format, .btn-unit { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.8rem; cursor: pointer; }
+    .btn-level.active, .btn-format.active, .btn-unit.active { background: rgba(11, 192, 164, 0.3); }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-bleh-bg-1 via-bleh-bg-2 to-bleh-bg-3 text-slate-100 min-h-screen">
+
+  <!-- Top Bar -->
+  <header class="w-full h-16 px-6 flex items-center justify-between border-b border-white/10 backdrop-blur-xl bg-white/5">
+    <div class="flex items-center gap-6">
+      <h1 class="text-lg font-semibold tracking-wide">BLEHOLOGY</h1>
+      <nav class="flex gap-5 text-sm text-slate-300">
+        <button class="hover:text-white">Home</button>
+        <button class="hover:text-white">Favorites</button>
+        <button class="hover:text-white">Collections</button>
+        <button class="hover:text-white">Notes</button>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="relative">
+        <svg class="w-4 h-4 absolute left-2 top-2 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-width="1.5" d="m21 21-4.35-4.35M10 6a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z"/>
+        </svg>
+        <input placeholder="Search..." class="pl-8 pr-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-100 placeholder:text-slate-400 outline-none w-40"/>
+      </div>
+      <button id="settings-btn" class="text-sm text-slate-300 hover:text-white">⚙️ Settings</button>
+    </div>
+  </header>
+
+  <!-- Chat Container -->
+  <main class="flex-1 grid place-items-center px-6 py-6">
+    <div class="w-full max-w-4xl rounded-2xl bg-white/10 border border-white/10 backdrop-blur-xl flex flex-col overflow-hidden scrollable">
+      <div id="messages" class="messages space-y-4"></div>
+      <div class="composer flex gap-2">
+        <textarea
+          id="user-input"
+          placeholder="Escribe algo para bleh..."
+          class="flex-1 resize-none rounded-xl bg-white/5 border border-white/10 text-slate-100 px-3 py-2 text-sm outline-none placeholder:text-slate-500"
+          rows="1"
+        ></textarea>
+        <button
+          id="send-btn"
+          class="flex items-center gap-2 px-4 rounded-xl bg-gradient-to-r from-[#09C3D6] to-[#2D7BFF] text-white text-sm font-medium hover:opacity-90"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-width="1.5" d="m4 12 16-8-7 8 7 8-16-8Z"/>
+          </svg>
+          Enviar
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="settings-modal">
+    <div class="settings-content">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-bold">Settings</h2>
+        <button id="close-settings" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm mb-1">Reading Level</label>
+          <div class="flex gap-2">
+            <button class="btn-level active" data-level="basic">basic</button>
+            <button class="btn-level" data-level="intermediate">intermediate</button>
+            <button class="btn-level" data-level="expert">expert</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1">Answer Length</label>
+          <select id="answer-length" class="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm">
+            <option value="short">short</option>
+            <option value="medium" selected>medium</option>
+            <option value="long">long</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1">Format</label>
+          <div class="flex gap-2">
+            <button class="btn-format" data-format="bullets">bullets</button>
+            <button class="btn-format active" data-format="paragraph">paragraph</button>
+            <button class="btn-format" data-format="mixed">mixed</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1">Units</label>
+          <div class="flex gap-2">
+            <button class="btn-unit active" data-unit="SI">SI</button>
+            <button class="btn-unit" data-unit="imperial">imperial</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm mb-1">Mode</label>
+          <select id="mode-select" class="w-full bg-white/5 border border-white/10 rounded px-2 py-1 text-sm">
+            <option value="auto">auto</option>
+            <option value="research">research</option>
+            <option value="conversational">conversational</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex gap-2 mt-6">
+        <button id="save-settings" class="px-4 py-1 bg-emerald-500 text-white rounded text-sm">Save</button>
+        <button id="reset-settings" class="px-4 py-1 bg-gray-600 text-white rounded text-sm">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 🔑 DeepSeek API (local prototype only!)
+    const DEEPSEEK_API_KEY = "sk-58fe2e04c98e498280195ef6cd98c784";
+    // ✅ FIXED: No trailing spaces!
+    const DEEPSEEK_API_URL = "https://api.deepseek.com/chat/completions";
+
+    const messagesEl = document.getElementById("messages");
+    const inputEl = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+    const settingsBtn = document.getElementById("settings-btn");
+    const closeSettings = document.getElementById("close-settings");
+    const settingsModal = document.getElementById("settings-modal");
+
+    let messages = [];
+    let isLoading = false;
+
+    // Default prefs
+    let userPrefs = {
+      reading_level: "basic",
+      answer_length: "medium",
+      format: "paragraph",
+      units: "SI",
+      mode: "auto"
+    };
+
+    // Load from localStorage
+    function loadPrefs() {
+      const saved = localStorage.getItem("bleh_prefs");
+      if (saved) {
+        try {
+          userPrefs = {...userPrefs, ...JSON.parse(saved)};
+        } catch (e) {}
+      }
+      applyPrefs();
+    }
+
+    function savePrefs() {
+      localStorage.setItem("bleh_prefs", JSON.stringify(userPrefs));
+      applyPrefs();
+    }
+
+    function applyPrefs() {
+      document.getElementById("answer-length").value = userPrefs.answer_length;
+      document.getElementById("mode-select").value = userPrefs.mode;
+      document.querySelectorAll(".btn-level").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.level === userPrefs.reading_level);
+      });
+      document.querySelectorAll(".btn-format").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.format === userPrefs.format);
+      });
+      document.querySelectorAll(".btn-unit").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.unit === userPrefs.units);
+      });
+    }
+
+    const idGen = () => Math.random().toString(36).slice(2);
+
+    function addMessage(role, text, id = idGen()) {
+      const div = document.createElement("div");
+      div.className = `flex ${role === "user" ? "justify-end" : "justify-start"}`;
+      div.innerHTML = `
+        <div class="px-4 py-2 rounded-2xl text-sm ${role === "user" ? "message-user" : "message-assistant"}">
+          ${text.replace(/\n/g, "<br>")}
+        </div>
+      `;
+      messagesEl.appendChild(div);
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+      messages.push({ id, role, text });
+      return id;
+    }
+
+    // ✅ Optimized system prompt (shorter but keeps BLEH identity)
+    function getSystemPrompt() {
+      return `[SYSTEM — BLEH/blehology v1.2 — EN]
+You are BLEH, NASA biosciences assistant. Mission: make space biology knowledge accurate, understandable, and useful.
+
+User profile:
+- Reading level: ${userPrefs.reading_level}
+- Answer length: ${userPrefs.answer_length}
+- Format: ${userPrefs.format}
+- Units: ${userPrefs.units}
+- Mode: ${userPrefs.mode}
+
+Rules:
+1. Always respond in English.
+2. In "research" mode: cite sources, be evidence-based.
+3. In "conversational" mode: be brief (2–6 lines), no citations unless asked.
+4. Never invent data. If unsure, say so.
+5. Use Markdown: **bold**, *italic*, \`code\`, lists.
+6. Keep answers low-noise, high-signal.`;
+    }
+
+    async function sendMessage() {
+      const val = inputEl.value.trim();
+      if (!val || isLoading) return;
+
+      inputEl.value = "";
+      isLoading = true;
+      sendBtn.disabled = true;
+
+      addMessage("user", val);
+
+      const apiMessages = [
+        { role: "system", content: getSystemPrompt() },
+        ...messages.map(m => ({ role: m.role, content: m.text })),
+        { role: "user", content: val }
+      ];
+
+      try {
+        const response = await fetch(DEEPSEEK_API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${DEEPSEEK_API_KEY}`,
+          },
+          body: JSON.stringify({
+            model: "deepseek-chat",
+            messages: apiMessages,
+            stream: true,
+            temperature: 0.7,
+          }),
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.body) throw new Error("No stream support");
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let fullText = "";
+        const msgId = addMessage("assistant", "");
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split("\n").filter(line => line.trim() !== "");
+
+          for (const line of lines) {
+            // ✅ FIXED: Correct SSE parsing
+            if (line.startsWith("data: ")) {
+              const data = line.substring(6).trim();
+              if (data === "[DONE]") continue;
+
+              try {
+                const json = JSON.parse(data);
+                const token = json.choices[0]?.delta?.content || "";
+                if (token) {
+                  fullText += token;
+                  const lastMsg = messagesEl.lastChild;
+                  if (lastMsg) {
+                    lastMsg.querySelector("div").innerHTML = fullText.replace(/\n/g, "<br>");
+                    messagesEl.scrollTop = messagesEl.scrollHeight;
+                  }
+                }
+              } catch (e) {
+                console.warn("Parse error", line);
+              }
+            }
+          }
+        }
+
+        messages[messages.length - 1].text = fullText;
+
+      } catch (err) {
+        console.error("Error:", err);
+        addMessage("assistant", `⚠️ Error: ${err.message}`);
+      } finally {
+        isLoading = false;
+        sendBtn.disabled = false;
+      }
+    }
+
+    // Settings modal
+    settingsBtn.addEventListener("click", () => settingsModal.style.display = "block");
+    closeSettings.addEventListener("click", () => settingsModal.style.display = "none");
+    window.addEventListener("click", (e) => {
+      if (e.target === settingsModal) settingsModal.style.display = "none";
+    });
+
+    document.getElementById("save-settings").addEventListener("click", () => {
+      userPrefs.reading_level = document.querySelector(".btn-level.active").dataset.level;
+      userPrefs.answer_length = document.getElementById("answer-length").value;
+      userPrefs.format = document.querySelector(".btn-format.active").dataset.format;
+      userPrefs.units = document.querySelector(".btn-unit.active").dataset.unit;
+      userPrefs.mode = document.getElementById("mode-select").value;
+      savePrefs();
+      settingsModal.style.display = "none";
+      alert("Settings saved!");
+    });
+
+    document.getElementById("reset-settings").addEventListener("click", () => {
+      userPrefs = {
+        reading_level: "basic",
+        answer_length: "medium",
+        format: "paragraph",
+        units: "SI",
+        mode: "auto"
+      };
+      savePrefs();
+      alert("Settings reset.");
+    });
+
+    // Toggle buttons
+    document.querySelectorAll(".btn-level").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".btn-level").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
+
+    document.querySelectorAll(".btn-format").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".btn-format").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
+
+    document.querySelectorAll(".btn-unit").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".btn-unit").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+    });
+
+    // Send
+    sendBtn.addEventListener("click", sendMessage);
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+
+    // Welcome
+    setTimeout(() => {
+      addMessage("assistant", "Hello! I'm **BLEH**, your NASA biosciences assistant. Ask me anything about space biology, human health in orbit, or GeneLab data!");
+    }, 300);
+
+    loadPrefs();
+  </script>
+</body>
+</html>
