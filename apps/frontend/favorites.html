@@ -12,7 +12,7 @@
     /* --- Custom Styles --- */
     body {
       min-height: 100vh; /* Full viewport height */
-      background: linear-gradient(180deg, #0c0c0c 0%, #617c6f 100%);
+      background: linear-gradient(160deg, #0c0c0c 40%, #36776a 100%);
       background-size: cover;
       color: white; /* Default text color */
       font-family: Arial, sans-serif;
@@ -30,17 +30,38 @@
       color: white;
     }
 
+
     /* Custom styling for sidebar buttons */
     .sidebar-btn {
-      background-color: rgba(96, 161, 126, 0.15);
-      border: none;
-      transition: transform 0.2s ease-out, background-color 0.2s;
-    }
+      background-color: rgba(131, 200, 168, 0.15);
+      border: none;        transition: transform 0.2s ease-out, background-color 0.2s;
+       backdrop-filter: blur(4px);
+       -webkit-backdrop-filter: blur(4px); /* For Safari */
+       border-radius: 20px;
+       border: 2px solid rgba(100, 100, 100, 0.1);
+       box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+       text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        
+      }
     .sidebar-btn:hover {
       background-color: rgba(96, 161, 126, 0.3);
       transform: scale(1.03);
       color: white;
     }
+
+    /* Hover effect for the add note button */
+    #add-note-btn:hover {
+      background-color: rgba(40, 167, 69, 0.5); /* A semi-transparent version of the success green */
+      border-color: rgba(40, 167, 69, 0.7);
+    }
+
+          .form-control:focus {
+        background-color: transparent; /* Keep background transparent */
+        color: white; /* Keep text white */
+        /* Override Bootstrap's blue glow with a theme-appropriate green */
+        border-color: rgba(96, 161, 126, 0.4);
+        box-shadow: 0 0 0 0.25rem rgba(96, 161, 126, 0.25);
+      }
 
     /* Whiteboard styles */
     #whiteboard-container {
@@ -58,11 +79,11 @@
       width: 200px;
       min-height: 150px;
       padding: 15px;
-      background: rgb(86, 118, 107);
+      background: linear-gradient(160deg, #27564d 50%, #2c6156 100%);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       border-radius: 20px;
-      border: 2px solid rgba(100, 100, 100, 0.1);
+      border: 2px solid rgba(141, 255, 221, 0.1);
       box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
       text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
       color: white;
@@ -132,7 +153,7 @@
     }
 
     .connecting-line {
-      stroke: #21f3aa;
+      stroke: #1ba172;
       stroke-width: 2;
     }
 
@@ -172,7 +193,7 @@
           <div id="whiteboard-container" class="position-relative">
             <!-- Sticky notes will be added here dynamically -->
             <div class="position-absolute top-0 start-0 m-3">
-              <button id="add-note-btn" class="btn btn-success">Add New Note</button>
+              <button id="add-note-btn" class="btn btn-success glass-card">Add New Note</button>
             </div>
           </div>
         </div>
