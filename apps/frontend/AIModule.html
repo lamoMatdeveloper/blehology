@@ -6,6 +6,39 @@
   <title>BLEHOLOGY — Local Prototype</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    
+    /* This works for browsers like Chrome, Edge, and Safari */
+
+/* First, style the overall scrollbar */
+::-webkit-scrollbar {
+  width: 0px; /* How wide the scrollbar is */
+}
+
+/* This is the "track," the part the handle slides in */
+::-webkit-scrollbar-track {
+  background: #ff0000; /* A dark color that matches your background */
+  border-radius: 5px;
+}
+
+/* This is the draggable "thumb" or handle */
+::-webkit-scrollbar-thumb {
+  background: #08ff8c; /* A mid-grey color for the handle */
+  border-radius: 5px; /* Makes the handle rounded */
+}
+
+/* Change the handle's color when you hover over it */
+::-webkit-scrollbar-thumb:hover {
+  background: #a0c0b7; /* A lighter grey for the hover effect */
+}
+
+/* --- For Firefox --- */
+/* Firefox uses a different, simpler system */
+html {
+  scrollbar-width: thin; /* Can be "auto", "thin", or "none" */
+  scrollbar-color: #718096 #2D3748; /* thumb color track color */
+}
+
+
     body { font-family: system-ui, sans-serif; }
     .message-user { background-color: rgba(11, 192, 164, 0.2); }
     .message-assistant { background-color: rgba(29, 104, 80, 0.1); }

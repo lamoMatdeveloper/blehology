@@ -174,12 +174,12 @@
       <div class="col-lg-2 d-flex flex-column">
         <div class="card glass-card flex-grow-1 p-3">
           <div class="d-grid gap-3">
-            <button class="btn btn-lg text-white sidebar-btn">Home</button>
-            <button class="btn btn-lg text-white sidebar-btn">Favourites</button>
-            <button class="btn btn-lg text-white sidebar-btn">Collections</button>
-            <button class="btn btn-lg text-white sidebar-btn">Your whiteboard</button>
+            <button onclick="OpenHome()" class="btn btn-lg text-white sidebar-btn">Home</button>
+            <button onclick="OpenFavs()" class="btn btn-lg text-white sidebar-btn">Favourites</button>
+            <button onclick="OpenCollections()" class="btn btn-lg text-white sidebar-btn">Collections</button>
+            <button onclick="OpenWhiteboard()" class="btn btn-lg text-white sidebar-btn">Your whiteboard</button>
           </div>
-          <button class="btn btn-lg text-white sidebar-btn mt-auto">Settings</button>
+          <button onclick="(OpenSett)" class="btn btn-lg text-white sidebar-btn mt-auto">Settings</button>
         </div>
       </div>
 
@@ -207,6 +207,25 @@
       </div>
     </div>
   </div>
+
+    <!-- Open buttons funcitonality -->
+    <script>
+      function OpenHome() {
+        window.location.href = "index.html";
+      }
+      function OpenFavs() {
+         window.location.href = "AIModule.html";
+      }
+      function OpenCollections() {
+         window.location.href = "AIModule.html";
+      }
+      function OpenWhiteboard() {
+        window.location.href = "Whiteboard.html";
+      }
+      function OpenSett() {
+         window.location.href = "AIModule.html";
+      }
+    </script>
 
   <!-- Bootstrap JS Bundle -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
