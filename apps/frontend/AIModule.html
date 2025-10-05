@@ -310,8 +310,8 @@ Rules:
     if (!cleanText) return;
 
     const utterance = new SpeechSynthesisUtterance(cleanText);
-    utterance.rate = 0.9;
-    utterance.pitch = 1.1;
+    utterance.rate = 0.95;
+    utterance.pitch = 1.4;
     utterance.lang = 'en-US';
     speechSynthesis.speak(utterance);
   }
