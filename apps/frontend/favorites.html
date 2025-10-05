@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nasa BioScience Explorer - Favorites</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  
+  <style>
+    /* --- Custom Styles --- */
+    body {
+      min-height: 100vh; /* Full viewport height */
+      background: linear-gradient(180deg, #0c0c0c 0%, #617c6f 100%);
+      background-size: cover;
+      color: white; /* Default text color */
+      font-family: Arial, sans-serif;
+    }
+
+    /* Custom class for the glass effect */
+    .glass-card {
+      background: rgba(86, 86, 86, 0.05);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px); /* For Safari */
+      border-radius: 20px;
+      border: 2px solid rgba(100, 100, 100, 0.1);
+      box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+      text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+      color: white;
+    }
+
+    /* Custom styling for sidebar buttons */
+    .sidebar-btn {
+      background-color: rgba(96, 161, 126, 0.15);
+      border: none;
+      transition: transform 0.2s ease-out, background-color 0.2s;
+    }
+    .sidebar-btn:hover {
+      background-color: rgba(96, 161, 126, 0.3);
+      transform: scale(1.03);
+      color: white;
+    }
+
+    /* Whiteboard styles */
+    #whiteboard-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 500px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .sticky-note {
+      position: absolute;
+      width: 200px;
+      min-height: 150px;
+      padding: 15px;
+      background: rgb(86, 118, 107);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border-radius: 20px;
+      border: 2px solid rgba(100, 100, 100, 0.1);
+      box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+      text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+      color: white;
+      cursor: move;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sticky-note-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .sticky-note-title {
+      background: transparent;
+      border: none;
+      color: white;
+      font-weight: bold;
+      width: 100%;
+      outline: none;
+    }
+
+    .sticky-note-content {
+      flex-grow: 1;
+      background: transparent;
+      border: none;
+      color: white;
+      outline: none;
+      overflow: auto;
+      resize: none;
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      color: #f44336;
+    }
+
+    .link-line {
+      position: absolute;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .link-btn {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      width: 20px;
+      height: 20px;
+      background-color: #4a886c;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 20;
+    }
+
+    .connecting {
+      cursor: crosshair;
+    }
+
+    .connecting .link-btn {
+      background-color: #ff9800;
+    }
+
+    .connecting-line {
+      stroke: #21f3aa;
+      stroke-width: 2;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+
+  <div class="container-fluid vh-100 d-flex flex-column py-3">
+    <div class="row flex-grow-1">
+      <!-- Left Sidebar -->
+      <div class="col-lg-2 d-flex flex-column">
+        <div class="card glass-card flex-grow-1 p-3">
+          <div class="d-grid gap-3">
+            <button class="btn btn-lg text-white sidebar-btn">Home</button>
+            <button class="btn btn-lg text-white sidebar-btn">Favourites</button>
+            <button class="btn btn-lg text-white sidebar-btn">Collections</button>
+            <button class="btn btn-lg text-white sidebar-btn">Your whiteboard</button>
+          </div>
+          <button class="btn btn-lg text-white sidebar-btn mt-auto">Settings</button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-7 d-flex flex-column gap-3">
+        <div class="card glass-card p-2">
+          <input type="text" placeholder="Search..." class="form-control form-control-lg bg-transparent text-white border-0">
+        </div>
+        <div class="card glass-card flex-grow-1 p-3 overflow-auto">
+          <!-- Whiteboard Container -->
+          <div id="whiteboard-container" class="position-relative">
+            <!-- Sticky notes will be added here dynamically -->
+            <div class="position-absolute top-0 start-0 m-3">
+              <button id="add-note-btn" class="btn btn-success">Add New Note</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Sidebar -->
+      <div class="col-lg-3 d-flex">
+        <div class="card glass-card flex-grow-1 d-flex justify-content-center align-items-center">
+          AI Chat
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const whiteboard = document.getElementById('whiteboard-container');
+      const addNoteBtn = document.getElementById('add-note-btn');
+      let noteCounter = 1;
+      let isConnecting = false;
+      let firstNote = null;
+      let connections = [];
+      let tempLine = null;
+
+      // Add new sticky note
+      addNoteBtn.addEventListener('click', () => {
+        createStickyNote();
+      });
+
+      function createStickyNote(x = 100, y = 100) {
+        const note = document.createElement('div');
+        note.className = 'sticky-note';
+        note.id = `note-${noteCounter++}`;
+        note.style.left = `${x}px`;
+        note.style.top = `${y}px`;
+        note.innerHTML = `
+          <div class="sticky-note-header">
+            <input type="text" class="sticky-note-title" value="Note ${noteCounter-1}">
+            <button class="delete-btn">×</button>
+          </div>
+          <textarea class="sticky-note-content">Type something...</textarea>
+          <div class="link-btn"></div>
+        `;
+        
+        whiteboard.appendChild(note);
+        makeDraggable(note);
+        
+        // Delete functionality
+        note.querySelector('.delete-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          removeConnections(note.id);
+          note.remove();
+        });
+        
+        // Link functionality
+        note.querySelector('.link-btn').addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+          handleLinkStart(note);
+        });
+        
+        // Title and content focus handling
+        const titleInput = note.querySelector('.sticky-note-title');
+        const contentTextarea = note.querySelector('.sticky-note-content');
+        
+        titleInput.addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+        });
+        
+        contentTextarea.addEventListener('mousedown', (e) => {
+          e.stopPropagation();
+        });
+        
+        return note;
+      }
+
+      function makeDraggable(element) {
+        let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+        
+        element.onmousedown = dragMouseDown;
+
+        function dragMouseDown(e) {
+          e.preventDefault();
+          // Don't trigger drag when clicking on inputs, textareas or buttons
+          if (e.target.classList.contains('sticky-note-title') || 
+              e.target.classList.contains('sticky-note-content') || 
+              e.target.classList.contains('delete-btn') || 
+              e.target.classList.contains('link-btn')) {
+            return;
+          }
+          
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          document.onmouseup = closeDragElement;
+          document.onmousemove = elementDrag;
+        }
+
+        function elementDrag(e) {
+          e.preventDefault();
+          pos1 = pos3 - e.clientX;
+          pos2 = pos4 - e.clientY;
+          pos3 = e.clientX;
+          pos4 = e.clientY;
+          
+          element.style.top = (element.offsetTop - pos2) + "px";
+          element.style.left = (element.offsetLeft - pos1) + "px";
+          
+          updateConnections();
+          
+          // Update temporary line if connecting
+          if (tempLine && firstNote) {
+            updateTempLine(firstNote, element);
+          }
+        }
+
+        function closeDragElement() {
+          document.onmouseup = null;
+          document.onmousemove = null;
+        }
+      }
+
+      function handleLinkStart(note) {
+        if (!isConnecting) {
+          isConnecting = true;
+          firstNote = note;
+          whiteboard.classList.add('connecting');
+          
+          // Create temporary line
+          createTempLine(note);
+        } else {
+          if (firstNote !== note) {
+            createConnection(firstNote, note);
+          }
+          resetConnectionState();
+        }
+      }
+
+      function createTempLine(note) {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const svg = document.createElementNS(svgNS, "svg");
+        svg.setAttribute("class", "link-line");
+        
+        const line = document.createElementNS(svgNS, "line");
+        line.setAttribute("class", "connecting-line");
+        
+        svg.appendChild(line);
+        whiteboard.appendChild(svg);
+        tempLine = { svg, line };
+        
+        updateTempLine(note, note);
+      }
+
+      function updateTempLine(fromNote, toNote) {
+        if (!tempLine) return;
+        
+        const line = tempLine.line;
+        const fromRect = fromNote.getBoundingClientRect();
+        const toRect = toNote.getBoundingClientRect();
+        const containerRect = whiteboard.getBoundingClientRect();
+        
+        const x1 = fromRect.left + fromRect.width/2 - containerRect.left;
+        const y1 = fromRect.top + fromRect.height/2 - containerRect.top;
+        const x2 = toRect.left + toRect.width/2 - containerRect.left;
+        const y2 = toRect.top + toRect.height/2 - containerRect.top;
+        
+        line.setAttribute("x1", x1);
+        line.setAttribute("y1", y1);
+        line.setAttribute("x2", x2);
+        line.setAttribute("y2", y2);
+      }
+
+      function resetConnectionState() {
+        isConnecting = false;
+        firstNote = null;
+        whiteboard.classList.remove('connecting');
+        
+        // Remove temporary line
+        if (tempLine) {
+          tempLine.svg.remove();
+          tempLine = null;
+        }
+      }
+
+      function createConnection(note1, note2) {
+        const connection = {
+          id: `conn-${Date.now()}`,
+          from: note1.id,
+          to: note2.id
+        };
+        
+        connections.push(connection);
+        drawConnection(connection);
+      }
+
+      function drawConnection(connection) {
+        const svgNS = "http://www.w3.org/2000/svg";
+        const svg = document.createElementNS(svgNS, "svg");
+        svg.setAttribute("class", "link-line");
+        svg.setAttribute("id", connection.id);
+        svg.style.position = "absolute";
+        svg.style.top = "0";
+        svg.style.left = "0";
+        svg.style.width = "100%";
+        svg.style.height = "100%";
+        svg.style.pointerEvents = "none";
+        svg.style.zIndex = "5";
+        
+        const line = document.createElementNS(svgNS, "line");
+        line.setAttribute("class", "connecting-line");
+        line.setAttribute("stroke", "#2196f3");
+        line.setAttribute("stroke-width", "2");
+        
+        svg.appendChild(line);
+        whiteboard.appendChild(svg);
+        
+        updateLinePosition(connection);
+      }
+
+      function updateLinePosition(connection) {
+        const line = document.querySelector(`#${connection.id} line`);
+        if (!line) return;
+        
+        const fromNote = document.getElementById(connection.from);
+        const toNote = document.getElementById(connection.to);
+        
+        if (!fromNote || !toNote) return;
+        
+        const fromRect = fromNote.getBoundingClientRect();
+        const toRect = toNote.getBoundingClientRect();
+        const containerRect = whiteboard.getBoundingClientRect();
+        
+        const x1 = fromRect.left + fromRect.width/2 - containerRect.left;
+        const y1 = fromRect.top + fromRect.height/2 - containerRect.top;
+        const x2 = toRect.left + toRect.width/2 - containerRect.left;
+        const y2 = toRect.top + toRect.height/2 - containerRect.top;
+        
+        line.setAttribute("x1", x1);
+        line.setAttribute("y1", y1);
+        line.setAttribute("x2", x2);
+        line.setAttribute("y2", y2);
+      }
+
+      function updateConnections() {
+        connections.forEach(conn => {
+          updateLinePosition(conn);
+        });
+      }
+
+      function removeConnections(noteId) {
+        connections = connections.filter(conn => {
+          if (conn.from === noteId || conn.to === noteId) {
+            const line = document.getElementById(conn.id);
+            if (line) line.remove();
+            return false;
+          }
+          return true;
+        });
+      }
+
+      // Create some initial notes for demonstration
+      setTimeout(() => {
+        const note1 = createStickyNote(200, 150);
+        const note2 = createStickyNote(400, 250);
+        note1.querySelector('.sticky-note-content').value = 'First note';
+        note2.querySelector('.sticky-note-content').value = 'Second note';
+      }, 500);
+
+      // Reset connection state when clicking on whiteboard
+      whiteboard.addEventListener('click', (e) => {
+        if (e.target === whiteboard) {
+          resetConnectionState();
+        }
+      });
+      
+      // Update lines when window is resized
+      window.addEventListener('resize', () => {
+        updateConnections();
+        if (tempLine && firstNote) {
+          updateTempLine(firstNote, firstNote);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
