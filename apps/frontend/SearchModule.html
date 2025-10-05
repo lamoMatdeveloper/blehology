@@ -8,12 +8,13 @@
         * {
             margin: 0;
             padding: 0;
+            padding-left: 10px;
             box-sizing: border-box;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0B3D91 0%, #1a1a2e 100%);
+            background: transparent;
             min-height: 100vh;
             padding: 20px;
         }
@@ -48,10 +49,15 @@
         }
 
         .search-container {
-            background: rgba(255, 255, 255, 0.95);
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        background: rgba(86, 86, 86, 0.05);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;
             margin-bottom: 30px;
         }
 
@@ -65,23 +71,35 @@
             flex: 1;
             padding: 15px 20px;
             font-size: 16px;
-            border: 2px solid #0B3D91;
+                    background: rgba(86, 86, 86, 0.05);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;
             border-radius: 25px;
             outline: none;
             transition: all 0.3s ease;
         }
 
         .search-input:focus {
-            border-color: #FC3D21;
+            border-color: #1ac385;
             box-shadow: 0 0 10px rgba(252, 61, 33, 0.2);
         }
 
         .search-button {
             padding: 15px 30px;
-            background: #0B3D91;
+                    background: rgba(0, 255, 183, 0.112);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;
             color: white;
-            border: none;
-            border-radius: 25px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
@@ -89,9 +107,9 @@
         }
 
         .search-button:hover {
-            background: #FC3D21;
+            background: #21fca4;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(252, 61, 33, 0.3);
+            box-shadow: 0 5px 15px rgba(33, 252, 205, 0.3);
         }
 
         .results-info {
@@ -106,11 +124,14 @@
         }
 
         .result-card {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
+            background: rgba(86, 86, 86, 0.05);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 15px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;
         }
 
         .result-card:hover {
@@ -118,30 +139,37 @@
         }
 
         .result-title {
-            color: #0B3D91;
+            color: #4fb5a0;
             font-size: 1.3em;
             margin-bottom: 10px;
             font-weight: bold;
+            text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.82)
         }
 
         .result-content {
-            color: #333;
+            color: #e1fff4bd;
             line-height: 1.6;
             margin-bottom: 10px;
         }
 
         .result-meta {
-            color: #666;
+            color: #ffffff;
             font-size: 0.9em;
             font-style: italic;
+            text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.82)
         }
 
         .no-results {
             text-align: center;
             padding: 40px;
-            background: white;
-            border-radius: 10px;
-            color: #666;
+                    background: rgba(86, 86, 86, 0.05);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;;
         }
 
         .loading {
@@ -152,7 +180,7 @@
         }
 
         .highlight {
-            background-color: yellow;
+            background-color: rgba(0, 0, 0, 0.507);
             font-weight: bold;
         }
 
@@ -347,7 +375,7 @@
                     // Vérifier si c'est un lien HTTP/HTTPS et le rendre cliquable
                     let formattedValue = highlightText(displayValue, query);
                     if (valueStr.startsWith('http://') || valueStr.startsWith('https://')) {
-                        formattedValue = `<a href="${valueStr}" target="_blank" rel="noopener noreferrer" style="color: #0B3D91; text-decoration: underline;">${highlightText(displayValue, query)}</a>`;
+                        formattedValue = `<a href="${valueStr}" target="_blank" rel="noopener noreferrer" style="color: #c4fde0; text-decoration: underline;">${highlightText(displayValue, query)}</a>`;
                     }
                     
                     cardContent += `
@@ -378,7 +406,7 @@
                                 // Rendre les liens cliquables dans le contexte aussi
                                 let formattedContext;
                                 if (valueStr.startsWith('http://') || valueStr.startsWith('https://')) {
-                                    formattedContext = `<a href="${valueStr}" target="_blank" rel="noopener noreferrer" style="color: #666; text-decoration: underline;">${displayStr}${valueStr.length > 100 ? '...' : ''}</a>`;
+                                    formattedContext = `<a href="${valueStr}" target="_blank" rel="noopener noreferrer" style="color: #c4fde0; text-decoration: underline;">${displayStr}${valueStr.length > 100 ? '...' : ''}</a>`;
                                 } else {
                                     formattedContext = displayStr + (valueStr.length > 100 ? '...' : '');
                                 }

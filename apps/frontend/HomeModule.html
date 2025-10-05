@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <style>
+        .background {
+      background: black
+}
+  
+      /* --- Custom Styles --- */
+      body {
+        min-height: 100vh; /* Full viewport height */
+        background: transparent;
+        background-size: cover;
+        color: white; /* Default text color */
+        font-family: Arial, sans-serif;
+      }
+
+      /* Custom class for the glass effect */
+      .glass-card {
+        background: rgba(86, 86, 86, 0.05);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;
+      }
+
+      /* Custom styling for sidebar buttons */
+      .sidebar-btn {
+        background-color: rgba(131, 200, 168, 0.15);
+        border: none;
+        transition: transform 0.2s ease-out, background-color 0.2s;
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        
+      }
+      .sidebar-btn:hover {
+        background-color: rgba(96, 161, 126, 0.3);
+        transform: scale(1.03);
+        color: white;
+      }
+
+      /* Multi-line text truncation */
+      .text-truncate-multiline {
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      /* Custom placeholder color */
+      .form-control::placeholder {
+        color: #ccc; /* Light gray color for placeholder */
+        opacity: 1; /* Override bootstrap's default opacity */
+      }
+
+      /* Custom focus style for form controls to match the theme */
+      .form-control:focus {
+        background-color: transparent; /* Keep background transparent */
+        color: white; /* Keep text white */
+        /* Override Bootstrap's blue glow with a theme-appropriate green */
+        border-color: rgba(96, 161, 126, 0.4);
+        box-shadow: 0 0 0 0.25rem rgba(96, 161, 126, 0.25);
+      }
+    </style>
+     <!-- Article 1 -->
+                        <h2>Welcome to Nasa BioScience Explorer</h2>
+            <p>Your gateway to exploring NASA's vast collection of biological science data and imagery. Dive into the wonders of space biology, from microscopic organisms to complex ecosystems studied in space missions.</p>
+            <hr>
+            <h3>Featured Collections</h3>
+            <ul>
+              <li>Astrobiology Research</li>
+              <li>Space Microbiology</li>
+              <li>Plant Growth Experiments</li>
+              <li>Human Health in Space</li>
+            </ul>
+            <hr>
+            <h3>Getting Started</h3>
+            <p>Use the search bar above to find specific datasets or browse through our featured collections. Click on any item to view detailed information, images, and related research articles.</p>
+            <p>Don't forget to check out your whiteboard for saving and organizing your favorite finds!</p>
+</body>
+</html>

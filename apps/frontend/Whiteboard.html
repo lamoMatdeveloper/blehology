@@ -10,14 +10,17 @@
   
   <style>
     :root {
-      --sidebar-width: 300px;
+      --sidebar-width: 400px;
       --topbar-height: 60px;
     }
+
+    ::-webkit-scrollbar { width: 0px; background: transparent; } /* For WebKit browsers */
+    html, body { scrollbar-width: none; } /* For Firefox */
     
     body {
       margin: 0;
       padding: 0;
-      background: linear-gradient(160deg, #0c0c0c 40%, #36776a 100%);
+      background: transparent;
       color: white;
       font-family: Arial, sans-serif;
       overflow: hidden;
@@ -25,6 +28,7 @@
     }
     
     #app-container {
+      background: transparent;
       display: flex;
       height: 100vh;
     }
@@ -33,12 +37,17 @@
     #top-bar {
       position: fixed;
       top: 0;
-      left: var(--sidebar-width);
-      right: 0;
+      left: calc(var(--sidebar-width) + 10px);
+      right: 10px;
       height: var(--topbar-height);
-      background: rgba(86, 86, 86, 0.2);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+              background: rgba(86, 86, 86, 0.05);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;
       border-bottom: 2px solid rgba(100, 100, 100, 0.1);
       display: flex;
       align-items: center;
@@ -48,26 +57,33 @@
     
     #top-bar button {
       margin-right: 15px;
-      background-color: rgba(40, 167, 69, 0.7);
-      backdrop-filter: blur(4px);
-      border: 2px solid rgba(100, 100, 100, 0.1);
-      box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
-      border-radius: 20px;
+              background: rgba(0, 255, 195, 0.192);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;
       color: white;
     }
     
     #top-bar button:hover {
-      background-color: rgba(40, 167, 69, 0.9);
+      background-color: rgba(0, 255, 187, 0.499);
     }
     
     /* Left Sidebar Styles */
     #left-sidebar {
       width: var(--sidebar-width);
       height: 100vh;
-      background: rgba(86, 86, 86, 0.2);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      border-right: 2px solid rgba(100, 100, 100, 0.1);
+              background: rgba(86, 86, 86, 0.05);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;
       padding: calc(var(--topbar-height) + 10px) 15px 15px;
       overflow-y: auto;
       position: fixed;
@@ -80,22 +96,36 @@
       max-height: 40vh;
       overflow-y: auto;
       margin-top: 10px;
-      background: rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
+              background: rgba(86, 86, 86, 0.05);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;
       padding: 10px;
     }
     
     .source-item {
       padding: 8px;
       margin-bottom: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 5px;
+              background: rgba(86, 86, 86, 0.05);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;
       word-break: break-word;
+      position: relative;
     }
     
     .source-item .source-text {
       font-size: 0.9em;
       margin-top: 5px;
+      margin-right: 25px;
     }
     
     .source-item .source-link {
@@ -105,6 +135,23 @@
       display: block;
       margin-top: 5px;
       font-size: 0.8em;
+    }
+    
+    .source-delete-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: none;
+      border: none;
+      color: #f44336;
+      font-weight: bold;
+      cursor: pointer;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2em;
     }
     
     #add-source-form {
@@ -129,12 +176,18 @@
     
     #add-source-form button {
       width: 100%;
-      background-color: rgba(96, 161, 126, 0.5);
-      border: none;
+              background: rgba(0, 255, 153, 0.192);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;
     }
     
     #add-source-form button:hover {
-      background-color: rgba(96, 161, 126, 0.7);
+      background-color: rgba(0, 255, 119, 0.286);
     }
     
     /* Whiteboard Area */
@@ -143,7 +196,7 @@
       margin-left: var(--sidebar-width);
       margin-top: var(--topbar-height);
       height: calc(100vh - var(--topbar-height));
-      background-color: rgba(255, 255, 255, 0.05);
+      background-color: rgba(255, 255, 255, 0);
       position: relative;
       overflow: hidden;
     }
@@ -154,7 +207,7 @@
       width: 200px;
       min-height: 150px;
       padding: 15px;
-      background: linear-gradient(160deg, #27564d 50%, #2c6156 100%);
+      background: linear-gradient(160deg, #17322d 50%, #17342e 100%);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       border-radius: 20px;
@@ -236,9 +289,15 @@
     /* JSON Display */
     #json-display {
       margin-top: 20px;
-      background: rgba(0, 0, 0, 0.2);
       padding: 10px;
-      border-radius: 5px;
+              background: rgba(86, 86, 86, 0.05);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        color: white;
       font-size: 0.8em;
       max-height: 200px;
       overflow: auto;
@@ -275,8 +334,6 @@
     <!-- Top Bar -->
     <div id="top-bar">
       <button id="add-note-btn" class="btn">Add Note</button>
-      <button id="add-graphic-btn" class="btn">Add Graphic</button>
-      <button id="make-mindmap-btn" class="btn">Make Mindmap</button>
     </div>
     
     <!-- Whiteboard Area -->
@@ -293,8 +350,6 @@
       // DOM Elements
       const whiteboard = document.getElementById('whiteboard-container');
       const addNoteBtn = document.getElementById('add-note-btn');
-      const addGraphicBtn = document.getElementById('add-graphic-btn');
-      const makeMindmapBtn = document.getElementById('make-mindmap-btn');
       const sourcesList = document.getElementById('sources-list');
       const addSourceBtn = document.getElementById('add-source-btn');
       const sourceText = document.getElementById('source-text');
@@ -495,6 +550,7 @@
         function closeDragElement() {
           document.onmouseup = null;
           document.onmousemove = null;
+          saveDataToStorage();
         }
       }
       
@@ -758,6 +814,18 @@
         sourceLink.value = '';
       }
       
+      function deleteSource(sourceId) {
+        // Remove from data
+        sourcesData = sourcesData.filter(source => source.id !== sourceId);
+        
+        // Re-render sources list
+        renderSources();
+        
+        // Save and update
+        saveDataToStorage();
+        updateJsonDisplay();
+      }
+      
       function renderSources() {
         sourcesList.innerHTML = '';
         
@@ -765,10 +833,20 @@
           const sourceEl = document.createElement('div');
           sourceEl.className = 'source-item';
           sourceEl.innerHTML = `
+            <button class="source-delete-btn" data-source-id="${source.id}">×</button>
             <div class="source-text">${source.text}</div>
             ${source.link ? `<a href="${source.link}" target="_blank" class="source-link">${source.link}</a>` : ''}
           `;
           sourcesList.appendChild(sourceEl);
+        });
+        
+        // Add event listeners to delete buttons
+        document.querySelectorAll('.source-delete-btn').forEach(button => {
+          button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const sourceId = button.getAttribute('data-source-id');
+            deleteSource(sourceId);
+          });
         });
       }
       

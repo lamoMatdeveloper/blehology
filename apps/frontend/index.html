@@ -72,59 +72,47 @@
       .form-control:focus {
         background-color: transparent; /* Keep background transparent */
         color: white; /* Keep text white */
-        /* Override Bootstrap's blue glow with a theme-appropriate green */
         border-color: rgba(96, 161, 126, 0.4);
         box-shadow: 0 0 0 0.25rem rgba(96, 161, 126, 0.25);
+      }
+
+      /* Resizer styles */
+      #resizer {
+        width: 8px;
+        cursor: col-resize;
+        background-color: rgba(100, 100, 100, 0.2);
+        border-left: 1px solid rgba(255, 255, 255, 0.05);
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+        transition: background-color 0.2s;
+      }
+      #resizer:hover {
+        background-color: rgba(96, 161, 126, 0.3);
       }
     </style>
   </head>
   <body>
     <div id="root"></div>
     <div class="container-fluid vh-100 d-flex flex-column py-3">
-      <div class="row flex-grow-1">
-        <!-- Left Sidebar -->
-        <div class="col-lg-2 d-flex flex-column">
-          <div class="card glass-card flex-grow-1 p-3">
-            <div class="d-grid gap-3">
-              <button onclick="OpenHome()" class="btn btn-lg text-white sidebar-btn" >Home</button>
-              <button onclick="OpenFavs()" class="btn btn-lg text-white sidebar-btn" >Favourites</button>
-              <button onclick="OpenCollections()" class="btn btn-lg text-white sidebar-btn" >Collections</button>
-              <button onclick="OpenWhiteboard()" class="btn btn-lg text-white sidebar-btn" >Your whiteboard</button>
-            </div>
-            <button class="btn btn-lg text-white sidebar-btn mt-auto" onclick="OpenSett()">Settings</button>
-          </div>
-        </div>
+      <div class="row flex-grow-1" style="flex-wrap: nowrap;">
 
         <!-- Main Content -->
-        <div class="col-lg-7 d-flex flex-column gap-3">
-          <div class="card glass-card p-2">
-            <input type="text" placeholder="Search..." class="form-control form-control-lg bg-transparent text-white border-0" style="color: white;">
+        <div id="main-panel" class="d-flex flex-column gap-3" style="flex: 1; min-width: 0;">
+          <div class="card glass-card p-2 d-flex flex-row justify-content-start gap-3">
+
+            <button onclick="OpenSearch()" class="btn btn-lg text-white sidebar-btn">Search</button>
+            <button onclick="OpenWhiteboard()" class="btn btn-lg text-white sidebar-btn">Your whiteboard</button>
           </div>
-          <div class="card glass-card flex-grow-1 p-3 overflow-auto">
-            <!-- Article 1 -->
-            <div class="card glass-card mb-3" style="background-color: rgba(78, 144, 143, 0.156);">
-              <div class="card-body">
-                <h5 class="card-title text-truncate">This is a looooooooooong tiiiiitleeeee yeessssssasdwasdwasdwasdwadsdawadsdawasdawsd</h5>
-                <p class="card-text text-truncate-multiline" style="-webkit-line-clamp: 5;">
-                  This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text. This is much better than just having a single line or letting it overflow uncontrollably.
-                </p>
-              </div>
-            </div>
-            <!-- Article 2 -->
-            <div class="card glass-card" style="background-color: rgba(78, 144, 143, 0.156);">
-              <div class="card-body">
-                <h5 class="card-title text-truncate">Another Article Title That Is Also Quite Long</h5>
-                <p class="card-text text-truncate-multiline" style="-webkit-line-clamp: 5;">
-                  This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text. This is much better than just having a single line or letting it overflow uncontrollably.
-                </p>
-              </div>
-            </div>
+          <div class="card glass-card flex-grow-1 p-3 overflow-auto" style="min-height: 0;">
+            <iframe id="main-content-iframe" src="SearchModule.html" style="height: 100%; width: 100%; border: none;"></iframe>
           </div>
         </div>
 
+        <!-- Resizer Handle -->
+        <div id="resizer"></div>
+
         <!-- Right Sidebar -->
-        <div class="col-lg-3 d-flex">
-          <div class="card glass-card flex-grow-1 d-flex justify-content-center align-items-center">
+        <div id="sidebar-panel" class="d-flex" style="width: 400px; min-width: 320px; max-width: 800px;">
+          <div class="card glass-card flex-grow-1 d-flex justify-content-center align-items-center" style="width: 100%;">
             
               <iframe src="AIModule.html" style="width:100%; height:100%; border:none; overflow: hidden;position: absolute; bottom: 0vh;"></iframe>
           </div>
@@ -138,19 +126,39 @@
     <!-- Open buttons funcitonality -->
     <script>
       function OpenHome() {
-        window.location.href = "index.html";
+        document.getElementById('main-content-iframe').src = "HomeModule.html";
       }
-      function OpenFavs() {
-         window.location.href = "AIModule.html";
-      }
-      function OpenCollections() {
-         window.location.href = "AIModule.html";
+      function OpenSearch() {
+        document.getElementById('main-content-iframe').src = "SearchModule.html";
       }
       function OpenWhiteboard() {
-        window.location.href = "Whiteboard.html";
+        document.getElementById('main-content-iframe').src = "Whiteboard.html";
       }
-      function OpenSett() {
-         window.location.href = "AIModule.html";
+
+      // Resizer functionality
+      const resizer = document.getElementById('resizer');
+      const mainPanel = document.getElementById('main-panel');
+      const sidebarPanel = document.getElementById('sidebar-panel');
+
+      let isResizing = false;
+
+      resizer.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        isResizing = true;
+        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseup', stopResizing);
+      });
+
+      function handleMouseMove(e) {
+        if (!isResizing) return;
+        const newSidebarWidth = window.innerWidth - e.clientX - (resizer.offsetWidth / 2);
+        sidebarPanel.style.width = `${newSidebarWidth}px`;
+      }
+
+      function stopResizing() {
+        isResizing = false;
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', stopResizing);
       }
     </script>
 
