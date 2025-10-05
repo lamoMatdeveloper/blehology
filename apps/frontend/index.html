@@ -53,8 +53,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-
     <div class="container-fluid vh-100 d-flex flex-column py-3">
       <div class="row flex-grow-1">
         <!-- Left Sidebar -->
@@ -109,17 +107,16 @@
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-    <!-- Firebase Scripts -->
+    <!-- Esto es para firebase, ADRIAN -->
     <script type="module">
-      // SECURITY WARNING: Your API key is exposed to the public here.
-      // This should be moved to a secure backend environment.
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-      import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
       
+      // Your Firebase config
       const firebaseConfig = {
-        apiKey: "YOUR_API_KEY_SHOULD_NOT_BE_HERE", // Example: "AIzaSyCIU-q88QGBqNmydsvnB_HaoONK1SNEAzE"
+        apiKey: "AIzaSyCIU-q88QGBqNmydsvnB_HaoONK1SNEAzE",
         authDomain: "blehology.firebaseapp.com",
-        databaseURL: "https://blehology-default-rtdb.firebaseio.com",
+        databaseURL: "https://blehology-default-rtdb.firebaseio.com/",
         projectId: "blehology",
         storageBucket: "blehology.firebasestorage.app",
         messagingSenderId: "166464430045",
@@ -127,14 +124,22 @@
         measurementId: "G-T2T1QWYQ2"
       };
       
+      // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const database = getDatabase(app);
-      const itemsRef = ref(database, 'items');
+      const rootRef = ref(database);
+      const itemsRef = ref(database, 'create');
       
+      //Read data from your database
       onValue(itemsRef, (snapshot) => {
         const data = snapshot.val();
-        console.log("Data from Firebase: ", data);
+        console.log("Toda la info guardada: ", data);
       });
+
     </script>
+    <!-- Ya acabo lo de firebase, ADRIAN-->
+
+  </body>
+  </html>
   </body>
 </html>
