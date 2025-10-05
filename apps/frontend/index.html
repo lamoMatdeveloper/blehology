@@ -6,26 +6,30 @@
     <title>Nasa BioScience Explorer</title>
     
     <style>
+
+      :root {
+        --gradient1: linear-gradient(180deg, #0c0c0c 0%, #617c6f 100%);
+        --ColorPalette1: rgba(96, 161, 126, 0.15);
+        --ColorPalette2: rgba(78, 144, 143, 0.156);
+      }
      body {
           margin: 0;
         min-height: 100vh; /* Full viewport height */
-        background-color: black;
         display: flex;
         justify-content: center;
         align-items: center;
-        background-image: url('thebackdrop.jpg'); /* Replace with your image path */
+        background: linear-gradient(180deg, #0c0c0c 0%, #617c6f 100%);
         background-size: cover;
         position: relative;
-        
     }
 
         .BoxBase {
         position: absolute;
         width: 40%;
         height: 100vh;
-        background: rgba(0,0,0,0.03);
-        backdrop-filter: blur(3px); /* Blur effect */
+        background: rgba(86, 86, 86, 0.05);
         -webkit-backdrop-filter: blur(3px); /* For Safari */
+        backdrop-filter: blur(3px); /* Blur effect */
         border-radius: 20px; /* Rounded corners */
         display: flex;
         justify-content: center;
@@ -37,8 +41,50 @@
         -moz-box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
         box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
         border: 3px solid rgba(100, 100, 100, 0.1);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
       
     }
+    .AnimatedBase {
+        position: absolute;
+        width: 40%;
+        height: 100vh;
+        background: rgba(86, 86, 86, 0.05);
+        -webkit-backdrop-filter: blur(3px); /* For Safari */
+        backdrop-filter: blur(3px); /* Blur effect */
+        border-radius: 20px; /* Rounded corners */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-family: Arial, sans-serif;
+        font-size: 18px;
+        -webkit-box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        -moz-box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        border: 3px solid rgba(100, 100, 100, 0.1);
+        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+        transform: translate(-50%, -50%);
+    }
+    #articleTitle {
+        font-size: 20px;
+        font-weight:600;
+    }
+    #articleTitle > span {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    #articleResume {
+        font-size: 14px;
+        font-weight:500;
+    }
+    #articleResume > span {
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 10; /* Limit the text to 8 lines */
+        overflow: hidden}
+
     </style>
 
   </head>
@@ -47,17 +93,35 @@
     <script type="module" src="/src/main.tsx"></script>
 
     <div class="BoxBase" style="width: 20%; height: 86vh; left: 1%; top: 2vh;">Side bar
-       <button class="BoxBase" style="width: 90%; height: 6vh; top: 2vh;"> Search Bar </button>
-       <button class="BoxBase" style="width: 90%; height: 6vh; top: 10vh;"> Search Bar </button>
-       <button class="BoxBase" style="width: 90%; height: 6vh; top: 18vh;"> Search Bar </button>
-       <button class="BoxBase" style="width: 90%; height: 6vh; top: 26vh;"> Search Bar </button>
+       <button class="AnimatedBase" style="width: 90%; height: 6vh; top: 5vh;background: var(--ColorPalette1);left: 50%;"> Home </button>
+       <button class="AnimatedBase" style="width: 90%; height: 6vh; top: 13vh;background: var(--ColorPalette1);left: 50%;"> Favourites </button>
+       <button class="AnimatedBase" style="width: 90%; height: 6vh; top: 21vh;background: var(--ColorPalette1);left: 50%;"> Collections </button>
+       <button class="AnimatedBase" style="width: 90%; height: 6vh; top: 29vh;background: var(--ColorPalette1);left: 50%;"> Your whiteboard </button>
 
     </div>
-    <div class="BoxBase" style="width: 20%; height: 6vh; left: 1%; bottom: 2vh;"> Search Bar </div>
-    <div class="BoxBase" style="width: 52%; height: 5vh; top: 2vh;"> Search Bar </div>
+    <div class="BoxBase" style="width: 20%; height: 6vh; left: 1%; bottom: 2vh;"> Settings </div>
+    <div class="BoxBase" style="width: 52%; height: 5vh; top: 2vh;">
+      <input type="text" placeholder="Search..." class="BoxBase" style="width: 95%; height: 70%; border-radius: 20px; border: none; padding: 0 10px; font-size: 16px;"/>
+    </div>
     <div class="BoxBase" style="width: 20%; height: 96vh; right: 1%;">AI Chat</div>
-    <div class="BoxBase" style="width: 52%; height: 86vh; bottom: 2vh;">Random Articles</div>
-
+    <div class="BoxBase" style="width: 52%; height: 86vh; bottom: 2vh;">
+      <div class="AnimatedBase" style="width: 95%; height: 40vh; top: 22vh; left: 50%;background: var(--ColorPalette2);">
+        <div class="BoxBase" id="articleTitle" style="width: 90%; height: 6vh; top: 2vh; text-align: left; justify-content: flex-start; padding: 0 15px;">
+          <span>This is a looooooooooong tiiiiitleeeee yeessssssasdwasdwasdwasdwadsdawadsdawasdawsd</span>
+        </div>
+        <div class="BoxBase" id="articleResume" style="width: 90%; height: 24vh; top: 10vh; text-align: left; justify-content: flex-start; align-items: flex-start; padding: 15px;">
+          <span>This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text.This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text.This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text. We'll set it to clamp after about 8 lines to demonstrate the effect properly inside the 28vh tall box. This is much better than just having a single line or letting it overflow uncontrollably. This ensures that the layout remains clean and doesn't break, even with a large amount of text. We'll set it to clamp after about 8 lines to demonstrate the effect properly inside the 28vh tall box. This is much better than just having a single line or letting it overflow uncontrollably.</span>
+        </div>
+      </div>
+      <div class="AnimatedBase" style="width: 95%; height: 40vh; top: 64vh; left: 50%;background: var(--ColorPalette2);">
+        <div class="BoxBase" id="articleTitle" style="width: 90%; height: 6vh; top: 2vh; text-align: left; justify-content: flex-start; padding: 0 15px;">
+          <span>This is a looooooooooong tiiiiitleeeee yeessssssasdwasdwasdwasdwadsdawadsdawasdawsd</span>
+        </div>
+        <div class="BoxBase" id="articleResume" style="width: 90%; height: 24vh; top: 10vh; text-align: left; justify-content: flex-start; align-items: flex-start; padding: 15px;">
+          <span>This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text.This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text.This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text. We'll set it to clamp after about 8 lines to demonstrate the effect properly inside the 28vh tall box. This is much better than just having a single line or letting it overflow uncontrollably. This ensures that the layout remains clean and doesn't break, even with a large amount of text. We'll set it to clamp after about 8 lines to demonstrate the effect properly inside the 28vh tall box. This is much better than just having a single line or letting it overflow uncontrollably.</span>
+        </div>
+      </div>
+    </div>
 
 <!-- Esto es para firebase, ADRIAN -->
 <script type="module">
