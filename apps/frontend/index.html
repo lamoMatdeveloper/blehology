@@ -4,169 +4,137 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Nasa BioScience Explorer</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     
     <style>
-
-      :root {
-        --gradient1: linear-gradient(180deg, #0c0c0c 0%, #617c6f 100%);
-        --ColorPalette1: rgba(96, 161, 126, 0.15);
-        --ColorPalette2: rgba(78, 144, 143, 0.156);
-      }
-     body {
-          margin: 0;
+      /* --- Custom Styles --- */
+      body {
         min-height: 100vh; /* Full viewport height */
-        display: flex;
-        justify-content: center;
-        align-items: center;
         background: linear-gradient(180deg, #0c0c0c 0%, #617c6f 100%);
         background-size: cover;
-        position: relative;
-    }
-
-        .BoxBase {
-        position: absolute;
-        width: 40%;
-        height: 100vh;
-        background: rgba(86, 86, 86, 0.05);
-        -webkit-backdrop-filter: blur(3px); /* For Safari */
-        backdrop-filter: blur(3px); /* Blur effect */
-        border-radius: 20px; /* Rounded corners */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
+        color: white; /* Default text color */
         font-family: Arial, sans-serif;
-        font-size: 18px;
-        -webkit-box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
-        -moz-box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
-        box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
-        border: 3px solid rgba(100, 100, 100, 0.1);
-        text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
+      }
 
-        .BoxBase:hover {
-            transform: translateY(-3px); /* Slight lift effect on hover */
-            transition: all 0.3s ease; /* Smooth transition for hover effects */
-        }
-
-      
-    }
-    .AnimatedBase {
-        position: absolute;
-        width: 40%;
-        height: 100vh;
+      /* Custom class for the glass effect */
+      .glass-card {
         background: rgba(86, 86, 86, 0.05);
-        -webkit-backdrop-filter: blur(3px); /* For Safari */
-        backdrop-filter: blur(3px); /* Blur effect */
-        border-radius: 20px; /* Rounded corners */
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: white;
-        font-family: Arial, sans-serif;
-        font-size: 18px;
-        -webkit-box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
-        -moz-box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px); /* For Safari */
+        border-radius: 20px;
+        border: 2px solid rgba(100, 100, 100, 0.1);
         box-shadow: -1px -1px 8px 3px rgba(0,0,0,0.25);
-        border: 3px solid rgba(100, 100, 100, 0.1);
         text-shadow: 0px 0px 6px rgba(0,0,0,0.82);
-        transform: translate(-50%, -50%);
-    }
+        color: white;
+      }
 
-    .AnimatedBase:hover {
-            transform: translate(-50%, -50%) translateY(-5px); /* Slight lift effect on hover */
-            transition: all 0.3s ease; /* Smooth transition for hover effects */
-        }
+      /* Custom styling for sidebar buttons */
+      .sidebar-btn {
+        background-color: rgba(96, 161, 126, 0.15);
+        border: none;
+        transition: transform 0.2s ease-out, background-color 0.2s;
+      }
+      .sidebar-btn:hover {
+        background-color: rgba(96, 161, 126, 0.3);
+        transform: scale(1.03);
+        color: white;
+      }
 
-
-    #articleTitle {
-        font-size: 20px;
-        font-weight:600;
-    }
-    #articleTitle > span {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-    }
-    #articleResume {
-        font-size: 14px;
-        font-weight:500;
-    }
-    #articleResume > span {
+      /* Multi-line text truncation */
+      .text-truncate-multiline {
         text-overflow: ellipsis;
         display: -webkit-box;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 10; /* Limit the text to 8 lines */
-        overflow: hidden}
-
+        overflow: hidden;
+      }
     </style>
-
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
 
-    <div class="AnimatedBase" style="width: 20%; height: 86vh; left: 11%; top: 46vh;"> 
-       <button class="AnimatedBase" style="width: 90%; height: 6vh; top: 5vh;background: var(--ColorPalette1);left: 50%;"> Home </button>
-       <button class="AnimatedBase" style="width: 90%; height: 6vh; top: 13vh;background: var(--ColorPalette1);left: 50%;"> Favourites </button>
-       <button class="AnimatedBase" style="width: 90%; height: 6vh; top: 21vh;background: var(--ColorPalette1);left: 50%;"> Collections </button>
-       <button class="AnimatedBase" style="width: 90%; height: 6vh; top: 29vh;background: var(--ColorPalette1);left: 50%;"> Your whiteboard </button>
-
-    </div>
-    <div class="AnimatedBase" class="Settings" style="width: 20%; height: 5vh; left: 11%; bottom: 0vh;"> Settings </div>
-    <div class="BoxBase" style="width: 52%; height: 5vh; top: 2vh;">
-      <input type="text" placeholder="Search..." class="BoxBase" style="width: 95%; height: 70%; border-radius: 20px; border: none; padding: 0 10px; font-size: 16px;"/>
-    </div>
-    <div class="AnimatedBase" style="width: 20%; top: 50vh ; height: 96vh; right: -8.5%;">AI Chat</div>
-    <div class="BoxBase" style="width: 52%; height: 86vh; bottom: 2vh;">
-      <div class="AnimatedBase"  style="width: 95%; height: 40vh; top: 22vh; left: 50%;background: var(--ColorPalette2);">
-        <div class="BoxBase" id="articleTitle" style="width: 90%; height: 6vh; top: 2vh; text-align: left; justify-content: flex-start; padding: 0 15px;">
-          <span>This is a looooooooooong tiiiiitleeeee yeessssssasdwasdwasdwasdwadsdawadsdawasdawsd</span>
+    <div class="container-fluid vh-100 d-flex flex-column py-3">
+      <div class="row flex-grow-1">
+        <!-- Left Sidebar -->
+        <div class="col-lg-2 d-flex flex-column">
+          <div class="card glass-card flex-grow-1 p-3">
+            <div class="d-grid gap-3">
+              <button class="btn btn-lg text-white sidebar-btn">Home</button>
+              <button class="btn btn-lg text-white sidebar-btn">Favourites</button>
+              <button class="btn btn-lg text-white sidebar-btn">Collections</button>
+              <button class="btn btn-lg text-white sidebar-btn">Your whiteboard</button>
+            </div>
+            <button class="btn btn-lg text-white sidebar-btn mt-auto">Settings</button>
+          </div>
         </div>
-        <div class="BoxBase" id="articleResume" style="width: 90%; height: 24vh; top: 10vh; text-align: left; justify-content: flex-start; align-items: flex-start; padding: 15px;">
-          <span>This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text.This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text.This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text. We'll set it to clamp after about 8 lines to demonstrate the effect properly inside the 28vh tall box. This is much better than just having a single line or letting it overflow uncontrollably. This ensures that the layout remains clean and doesn't break, even with a large amount of text. We'll set it to clamp after about 8 lines to demonstrate the effect properly inside the 28vh tall box. This is much better than just having a single line or letting it overflow uncontrollably.</span>
+
+        <!-- Main Content -->
+        <div class="col-lg-7 d-flex flex-column gap-3">
+          <div class="card glass-card p-2">
+            <input type="text" placeholder="Search..." class="form-control form-control-lg bg-transparent text-white border-0">
+          </div>
+          <div class="card glass-card flex-grow-1 p-3 overflow-auto">
+            <!-- Article 1 -->
+            <div class="card glass-card mb-3" style="background-color: rgba(78, 144, 143, 0.156);">
+              <div class="card-body">
+                <h5 class="card-title text-truncate">This is a looooooooooong tiiiiitleeeee yeessssssasdwasdwasdwasdwadsdawadsdawasdawsd</h5>
+                <p class="card-text text-truncate-multiline" style="-webkit-line-clamp: 5;">
+                  This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text. This is much better than just having a single line or letting it overflow uncontrollably.
+                </p>
+              </div>
+            </div>
+            <!-- Article 2 -->
+            <div class="card glass-card" style="background-color: rgba(78, 144, 143, 0.156);">
+              <div class="card-body">
+                <h5 class="card-title text-truncate">Another Article Title That Is Also Quite Long</h5>
+                <p class="card-text text-truncate-multiline" style="-webkit-line-clamp: 5;">
+                  This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text. This is much better than just having a single line or letting it overflow uncontrollably.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="col-lg-3 d-flex">
+          <div class="card glass-card flex-grow-1 d-flex justify-content-center align-items-center">
+            AI Chat
+          </div>
         </div>
       </div>
-      <div class="AnimatedBase" style="width: 95%; height: 40vh; top: 64vh; left: 50%;background: var(--ColorPalette2);">
-        <div class="BoxBase" id="articleTitle" style="width: 90%; height: 6vh; top: 2vh; text-align: left; justify-content: flex-start; padding: 0 15px;">
-          <span>This is a looooooooooong tiiiiitleeeee yeessssssasdwasdwasdwasdwadsdawadsdawasdawsd</span>
-        </div>
-        <div class="BoxBase" id="articleResume" style="width: 90%; height: 24vh; top: 10vh; text-align: left; justify-content: flex-start; align-items: flex-start; padding: 15px;">
-          <span>This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text.This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text.This is a very long summary text that will wrap onto multiple lines. If it gets too long and exceeds the available space within its container, it should be truncated with an ellipsis at the end. This ensures that the layout remains clean and doesn't break, even with a large amount of text. We'll set it to clamp after about 8 lines to demonstrate the effect properly inside the 28vh tall box. This is much better than just having a single line or letting it overflow uncontrollably. This ensures that the layout remains clean and doesn't break, even with a large amount of text. We'll set it to clamp after about 8 lines to demonstrate the effect properly inside the 28vh tall box. This is much better than just having a single line or letting it overflow uncontrollably.</span>
-        </div>
-      </div>
     </div>
 
-<!-- Esto es para firebase, ADRIAN -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-  
-  // Your Firebase config
-  const firebaseConfig = {
-    apiKey: "AIzaSyCIU-q88QGBqNmydsvnB_HaoONK1SNEAzE",
-    authDomain: "blehology.firebaseapp.com",
-    databaseURL: "https://blehology-default-rtdb.firebaseio.com",
-    projectId: "blehology",
-    storageBucket: "blehology.firebasestorage.app",
-    messagingSenderId: "166464430045",
-    appId: "1:166464430045:web:77566d918ba41c43c86034",
-    measurementId: "G-T2T1QWYQ2"
-  };
-  
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
-  const rootRef = ref(database);
-  const itemsRef = ref(database, 'items');
-  
-  //Read data from your database
-  onValue(itemsRef, (snapshot) => {
-    const data = snapshot.val();
-    console.log("Toda la info guardada: ", data);
-  });
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-</script>
-<!-- Ya acabo lo de firebase, ADRIAN-->
-
+    <!-- Firebase Scripts -->
+    <script type="module">
+      // SECURITY WARNING: Your API key is exposed to the public here.
+      // This should be moved to a secure backend environment.
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+      import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+      
+      const firebaseConfig = {
+        apiKey: "YOUR_API_KEY_SHOULD_NOT_BE_HERE", // Example: "AIzaSyCIU-q88QGBqNmydsvnB_HaoONK1SNEAzE"
+        authDomain: "blehology.firebaseapp.com",
+        databaseURL: "https://blehology-default-rtdb.firebaseio.com",
+        projectId: "blehology",
+        storageBucket: "blehology.firebasestorage.app",
+        messagingSenderId: "166464430045",
+        appId: "1:166464430045:web:77566d918ba41c43c86034",
+        measurementId: "G-T2T1QWYQ2"
+      };
+      
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      const itemsRef = ref(database, 'items');
+      
+      onValue(itemsRef, (snapshot) => {
+        const data = snapshot.val();
+        console.log("Data from Firebase: ", data);
+      });
+    </script>
   </body>
-  </html>
+</html>
