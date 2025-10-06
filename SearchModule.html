@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recherche d'articles NASA</title>
+    <title>NASA INFO SEARCH</title>
     <style>
         * {
             margin: 0;
@@ -203,8 +203,8 @@
     <div class="container">
         <div class="header">
             <div class="logo">🚀</div>
-            <h1>Recherche NASA</h1>
-            <p class="subtitle">Explorez les articles de notre base de données</p>
+            <h1>SEARCH NASA</h1>
+            <p class="subtitle">Explore NASA articles</p>
         </div>
         
         <div class="search-container">
@@ -216,13 +216,13 @@
                     placeholder="Entrez votre recherche (titre, contenu, mots-clés...)"
                     required
                 >
-                <button type="submit" class="search-button">🔍 Rechercher</button>
+                <button type="submit" class="search-button">🔍 Search</button>
             </form>
             <div class="results-info" id="resultsInfo"></div>
         </div>
 
         <div id="loadingMessage" class="loading" style="display: none;">
-            Chargement des données...
+            Loading information...
         </div>
 
         <div class="results-container" id="resultsContainer"></div>
@@ -336,16 +336,16 @@
             if (results.length === 0) {
                 container.innerHTML = `
                     <div class="no-results">
-                        <h3>Aucun résultat trouvé</h3>
-                        <p>Essayez avec d'autres termes de recherche.</p>
+                        <h3>Nothing found</h3>
+                        <p>Try different search terms.</p>
                     </div>
                 `;
-                info.textContent = '0 résultat trouvé';
+                info.textContent = '0 results found';
                 return;
             }
-            
-            info.textContent = `${results.length} résultat${results.length > 1 ? 's' : ''} trouvé${results.length > 1 ? 's' : ''}`;
-            
+
+            info.textContent = `${results.length} result${results.length > 1 ? 's' : ''} found`;
+
             results.forEach(result => {
                 const card = document.createElement('div');
                 card.className = 'result-card';
