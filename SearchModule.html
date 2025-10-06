@@ -351,7 +351,7 @@
                 card.className = 'result-card';
                 
                 // Créer le contenu de la carte
-                let cardContent = `<div class="result-title">📄 Entrée: ${result.id}</div>`;
+                let cardContent = `<div class="result-title">📄 Article: ${result.id}</div>`;
                 
                 // Afficher tous les champs qui correspondent
                 result.matchedFields.forEach(match => {
@@ -438,12 +438,12 @@
             const query = document.getElementById('searchInput').value.trim();
             
             if (!query) {
-                alert('Veuillez entrer un terme de recherche');
+                alert('Pls enter a search term.');
                 return;
             }
             
             if (!allData) {
-                alert('Les données sont encore en cours de chargement. Veuillez patienter.');
+                alert('Data is still loading. Please wait.');
                 return;
             }
             
