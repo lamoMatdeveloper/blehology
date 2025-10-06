@@ -213,7 +213,7 @@
                     type="text" 
                     id="searchInput"
                     class="search-input" 
-                    placeholder="Entrez votre recherche (titre, contenu, mots-clés...)"
+                    placeholder="Enter your query (title, content, keywords...)"
                     required
                 >
                 <button type="submit" class="search-button">🔍 Search</button>
@@ -257,7 +257,7 @@
         onValue(itemsRef, (snapshot) => {
             allData = snapshot.val();
             document.getElementById('loadingMessage').style.display = 'none';
-            document.getElementById('resultsInfo').textContent = `Base de données chargée. ${allData ? Object.keys(allData).length : 0} entrées disponibles.`;
+            document.getElementById('resultsInfo').textContent = `Database loaded. ${allData ? Object.keys(allData).length : 0} entries available.`;
         });
         
         // Fonction de recherche
