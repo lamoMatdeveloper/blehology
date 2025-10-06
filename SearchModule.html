@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +17,18 @@
             background: transparent;
             min-height: 100vh;
             padding: 20px;
+        }
+
+        /* Custom Scrollbar Styles */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
         }
 
         .container {
@@ -438,7 +450,7 @@
             const query = document.getElementById('searchInput').value.trim();
             
             if (!query) {
-                alert('Pls enter a search term.');
+                alert('Please enter a search term.');
                 return;
             }
             

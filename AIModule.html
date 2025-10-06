@@ -6,8 +6,17 @@
   <title>BLEHOLOGY — NASA RAG Chat</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    ::-webkit-scrollbar { width: 0px; background: transparent; } /* For WebKit browsers */
-    html { scrollbar-width: none; } /* For Firefox */
+    /* Custom Scrollbar Styles */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
     body { font-family: system-ui, sans-serif; }
     .message-user { background-color: rgba(11, 192, 164, 0.2); }
     .message-assistant { background-color: rgba(29, 104, 80, 0.1); }
